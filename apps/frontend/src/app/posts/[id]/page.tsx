@@ -1,0 +1,348 @@
+'use client';
+
+import { useState } from 'react';
+import { useParams, useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { usePost } from '@/hooks/usePosts';
+import { postsApi } from '@/lib/api';
+
+export default function ViewPostPage() {
+  const params = useParams();
+  const router = useRouter();
+  const id = params.id as string;
+
+  const { post, isLoading, isError } = usePost(id);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  /**
+   * Handle post deletion
+   */
+  const handleDelete = async () => {
+    if (!post) return;
+
+    const confirmed = confirm(
+      `Are you sure you want to delete "${post.title}"? This action cannot be undone.`
+    );
+
+    if (!confirmed) return;
+
+    setDeleteError(null);
+    setIsDeleting(true);
+
+    try {
+      await postsApi.delete(post.id);
+      router.push('/posts');
+    } catch (error: any) {
+      setDeleteError(error.message || 'Failed to delete post');
+      setIsDeleting(false);
+    }
+  };
+
+  /**
+   * Format date to readable string
+   */
+  const formatDate = (date: Date | string) => {
+    const dateObj = typeof date === 'string' ? new Date(date) : date;
+    return dateObj.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  };
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="animate-pulse">
+          <div className="h-8 bg-gray-200 rounded w-3/4 mb-4"></div>
+          <div className="h-4 bg-gray-200 rounded w-1/4 mb-8"></div>
+          <div className="h-4 bg-gray-200 rounded w-full mb-2"></div>
+          <div className="h-4 bg-gray-200 rounded w-full mb-2"></div>
+          <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (isError || !post) {
+    return (
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="bg-red-50 border border-red-200 rounded-md p-8 text-center">
+          <svg
+            className="w-16 h-16 text-red-400 mx-auto mb-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Post Not Found</h2>
+          <p className="text-gray-600 mb-6">
+            {isError?.message || 'The post you are looking for does not exist or has been deleted.'}
+          </p>
+          <Link
+            href="/posts"
+            className="inline-block bg-primary-600 text-white hover:bg-primary-700 px-6 py-2 rounded-md font-medium transition-colors"
+          >
+            Back to Posts
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {/* Breadcrumbs */}
+      <nav className="mb-6 flex items-center space-x-2 text-sm text-gray-500">
+        <Link href="/" className="hover:text-primary-600">
+          Home
+        </Link>
+        <svg
+          className="w-4 h-4"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M9 5l7 7-7 7"
+          />
+        </svg>
+        <Link href="/posts" className="hover:text-primary-600">
+          Posts
+        </Link>
+        <svg
+          className="w-4 h-4"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M9 5l7 7-7 7"
+          />
+        </svg>
+        <span className="text-gray-900 font-medium truncate max-w-xs">
+          {post.title}
+        </span>
+      </nav>
+
+      {/* Delete Error */}
+      {deleteError && (
+        <div className="mb-6 bg-red-50 border border-red-200 rounded-md p-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <svg
+                className="w-5 h-5 text-red-600 mr-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              <p className="text-sm text-red-600">{deleteError}</p>
+            </div>
+            <button
+              onClick={() => setDeleteError(null)}
+              className="text-red-600 hover:text-red-800"
+            >
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Post Content Card */}
+      <article className="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden">
+        {/* Post Header */}
+        <div className="px-8 py-6 border-b border-gray-200 bg-gradient-to-r from-primary-50 to-blue-50">
+          <h1 className="text-3xl font-bold text-gray-900 mb-4">{post.title}</h1>
+          <div className="flex items-center justify-between text-sm text-gray-600">
+            <div className="flex items-center space-x-4">
+              <div className="flex items-center">
+                <svg
+                  className="w-5 h-5 mr-2"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                  />
+                </svg>
+                <span className="font-medium">{post.author || 'Anonymous'}</span>
+              </div>
+              <div className="flex items-center">
+                <svg
+                  className="w-5 h-5 mr-2"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                  />
+                </svg>
+                <span>{formatDate(post.createdAt)}</span>
+              </div>
+            </div>
+            {post.createdAt !== post.updatedAt && (
+              <div className="text-xs text-gray-500">
+                Updated: {formatDate(post.updatedAt)}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Post Content */}
+        <div className="px-8 py-6">
+          <div className="prose prose-lg max-w-none text-gray-700 whitespace-pre-wrap">
+            {post.content}
+          </div>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="px-8 py-6 bg-gray-50 border-t border-gray-200">
+          <div className="flex items-center justify-between gap-4">
+            <Link
+              href="/posts"
+              className="px-6 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-100 transition-colors font-medium flex items-center gap-2"
+            >
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M10 19l-7-7m0 0l7-7m-7 7h18"
+                />
+              </svg>
+              Back to Posts
+            </Link>
+            <div className="flex items-center gap-4">
+              <Link
+                href={`/posts/${post.id}/edit`}
+                className="px-6 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition-colors font-medium flex items-center gap-2"
+              >
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                  />
+                </svg>
+                Edit Post
+              </Link>
+              <button
+                onClick={handleDelete}
+                disabled={isDeleting}
+                className="px-6 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors font-medium flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isDeleting ? (
+                  <>
+                    <svg
+                      className="animate-spin h-5 w-5"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
+                    </svg>
+                    Deleting...
+                  </>
+                ) : (
+                  <>
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                      />
+                    </svg>
+                    Delete Post
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      </article>
+    </div>
+  );
+}

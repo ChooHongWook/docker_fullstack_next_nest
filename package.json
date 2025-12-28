@@ -1,0 +1,25 @@
+{
+  "name": "docker-fullstack-next-nest",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Docker-based fullstack application with Next.js and NestJS",
+  "scripts": {
+    "dev": "docker-compose up",
+    "dev:build": "docker-compose up --build",
+    "dev:down": "docker-compose down",
+    "dev:clean": "docker-compose down -v",
+    "prod": "docker-compose -f docker-compose.prod.yml up -d",
+    "prod:build": "docker-compose -f docker-compose.prod.yml up -d --build",
+    "prod:down": "docker-compose -f docker-compose.prod.yml down",
+    "logs": "docker-compose logs -f",
+    "logs:frontend": "docker-compose logs -f frontend",
+    "logs:backend": "docker-compose logs -f backend",
+    "logs:db": "docker-compose logs -f postgres",
+    "frontend": "pnpm --filter frontend",
+    "backend": "pnpm --filter backend"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=8.0.0"
+  }
+}
