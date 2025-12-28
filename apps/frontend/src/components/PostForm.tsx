@@ -2,7 +2,13 @@
 
 import { useState, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
+import { Loader2 } from 'lucide-react';
 import { PostFormData, ValidationError } from '@/lib/types';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 interface PostFormProps {
   initialData?: Partial<PostFormData>;
@@ -114,93 +120,70 @@ export default function PostForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* Title Field */}
-      <div>
-        <label
-          htmlFor="title"
-          className="block text-sm font-medium text-gray-700 mb-2"
-        >
-          Title <span className="text-red-500">*</span>
-        </label>
-        <input
+      <div className="space-y-2">
+        <Label htmlFor="title">
+          Title <span className="text-destructive">*</span>
+        </Label>
+        <Input
           type="text"
           id="title"
           name="title"
           value={formData.title}
           onChange={handleChange}
-          className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-colors ${
-            getFieldError('title')
-              ? 'border-red-500 bg-red-50'
-              : 'border-gray-300'
-          }`}
+          className={getFieldError('title') ? 'border-destructive' : ''}
           placeholder="Enter post title"
           disabled={isSubmitting}
           aria-invalid={!!getFieldError('title')}
           aria-describedby={getFieldError('title') ? 'title-error' : undefined}
         />
         {getFieldError('title') && (
-          <p id="title-error" className="mt-1 text-sm text-red-600">
+          <p id="title-error" className="text-sm text-destructive">
             {getFieldError('title')}
           </p>
         )}
       </div>
 
       {/* Content Field */}
-      <div>
-        <label
-          htmlFor="content"
-          className="block text-sm font-medium text-gray-700 mb-2"
-        >
-          Content <span className="text-red-500">*</span>
-        </label>
-        <textarea
+      <div className="space-y-2">
+        <Label htmlFor="content">
+          Content <span className="text-destructive">*</span>
+        </Label>
+        <Textarea
           id="content"
           name="content"
           value={formData.content}
           onChange={handleChange}
           rows={8}
-          className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-colors resize-vertical ${
-            getFieldError('content')
-              ? 'border-red-500 bg-red-50'
-              : 'border-gray-300'
-          }`}
+          className={getFieldError('content') ? 'border-destructive' : ''}
           placeholder="Enter post content"
           disabled={isSubmitting}
           aria-invalid={!!getFieldError('content')}
           aria-describedby={getFieldError('content') ? 'content-error' : undefined}
         />
         {getFieldError('content') && (
-          <p id="content-error" className="mt-1 text-sm text-red-600">
+          <p id="content-error" className="text-sm text-destructive">
             {getFieldError('content')}
           </p>
         )}
       </div>
 
       {/* Author Field */}
-      <div>
-        <label
-          htmlFor="author"
-          className="block text-sm font-medium text-gray-700 mb-2"
-        >
-          Author
-        </label>
-        <input
+      <div className="space-y-2">
+        <Label htmlFor="author">Author</Label>
+        <Input
           type="text"
           id="author"
           name="author"
           value={formData.author}
           onChange={handleChange}
-          className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-colors ${
-            getFieldError('author')
-              ? 'border-red-500 bg-red-50'
-              : 'border-gray-300'
-          }`}
+          className={getFieldError('author') ? 'border-destructive' : ''}
           placeholder="Enter author name (optional)"
           disabled={isSubmitting}
           aria-invalid={!!getFieldError('author')}
           aria-describedby={getFieldError('author') ? 'author-error' : undefined}
         />
         {getFieldError('author') && (
-          <p id="author-error" className="mt-1 text-sm text-red-600">
+          <p id="author-error" className="text-sm text-destructive">
             {getFieldError('author')}
           </p>
         )}
@@ -208,50 +191,28 @@ export default function PostForm({
 
       {/* Submit Error */}
       {submitError && (
-        <div className="p-4 bg-red-50 border border-red-200 rounded-md">
-          <p className="text-sm text-red-600">{submitError}</p>
-        </div>
+        <Alert variant="destructive">
+          <AlertDescription>{submitError}</AlertDescription>
+        </Alert>
       )}
 
       {/* Action Buttons */}
-      <div className="flex items-center justify-end gap-4 pt-4 border-t border-gray-200">
-        <button
+      <div className="flex items-center justify-end gap-4 pt-4 border-t">
+        <Button
           type="button"
           onClick={handleCancel}
           disabled={isSubmitting}
-          className="px-6 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors duration-200 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+          variant="outline"
         >
           Cancel
-        </button>
-        <button
+        </Button>
+        <Button
           type="submit"
           disabled={isSubmitting}
-          className="px-6 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition-colors duration-200 font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
         >
-          {isSubmitting && (
-            <svg
-              className="animate-spin h-5 w-5"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <circle
-                className="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                strokeWidth="4"
-              ></circle>
-              <path
-                className="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-              ></path>
-            </svg>
-          )}
+          {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
           {isSubmitting ? 'Submitting...' : submitLabel}
-        </button>
+        </Button>
       </div>
     </form>
   );
