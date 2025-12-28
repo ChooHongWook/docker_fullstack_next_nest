@@ -1,10 +1,8 @@
 'use client';
 
-import { useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { usePost } from '@/hooks/usePosts';
-import { postsApi } from '@/lib/api';
+import { usePost, useDeletePost } from '@/hooks/usePosts';
 
 export default function ViewPostPage() {
   const params = useParams();
@@ -12,8 +10,7 @@ export default function ViewPostPage() {
   const id = params.id as string;
 
   const { post, isLoading, isError } = usePost(id);
-  const [deleteError, setDeleteError] = useState<string | null>(null);
-  const [isDeleting, setIsDeleting] = useState(false);
+  const deletePostMutation = useDeletePost();
 
   /**
    * Handle post deletion
@@ -27,16 +24,11 @@ export default function ViewPostPage() {
 
     if (!confirmed) return;
 
-    setDeleteError(null);
-    setIsDeleting(true);
-
-    try {
-      await postsApi.delete(post.id);
-      router.push('/posts');
-    } catch (error: any) {
-      setDeleteError(error.message || 'Failed to delete post');
-      setIsDeleting(false);
-    }
+    deletePostMutation.mutate(post.id, {
+      onSuccess: () => {
+        router.push('/posts');
+      },
+    });
   };
 
   /**
@@ -146,7 +138,7 @@ export default function ViewPostPage() {
       </nav>
 
       {/* Delete Error */}
-      {deleteError && (
+      {deletePostMutation.isError && (
         <div className="mb-6 bg-red-50 border border-red-200 rounded-md p-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center">
@@ -164,10 +156,12 @@ export default function ViewPostPage() {
                   d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                 />
               </svg>
-              <p className="text-sm text-red-600">{deleteError}</p>
+              <p className="text-sm text-red-600">
+                {deletePostMutation.error?.message || 'Failed to delete post'}
+              </p>
             </div>
             <button
-              onClick={() => setDeleteError(null)}
+              onClick={() => deletePostMutation.reset()}
               className="text-red-600 hover:text-red-800"
             >
               <svg
@@ -292,10 +286,10 @@ export default function ViewPostPage() {
               </Link>
               <button
                 onClick={handleDelete}
-                disabled={isDeleting}
+                disabled={deletePostMutation.isPending}
                 className="px-6 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors font-medium flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {isDeleting ? (
+                {deletePostMutation.isPending ? (
                   <>
                     <svg
                       className="animate-spin h-5 w-5"

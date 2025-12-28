@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { useParams, useRouter } from 'next/navigation';
-import Link from 'next/link';
-import { usePost } from '@/hooks/usePosts';
-import { postsApi } from '@/lib/api';
-import PostForm from '@/components/PostForm';
-import { PostFormData } from '@/lib/types';
+import { useParams, useRouter } from "next/navigation";
+import Link from "next/link";
+import { usePost } from "@/hooks/usePosts";
+import { postsApi } from "@/lib/api";
+import PostForm from "@/components/PostForm";
+import { PostFormData } from "@/lib/types";
 
 export default function EditPostPage() {
   const params = useParams();
@@ -81,9 +81,12 @@ export default function EditPostPage() {
               d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
             />
           </svg>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Post Not Found</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">
+            Post Not Found
+          </h2>
           <p className="text-gray-600 mb-6">
-            {isError?.message || 'The post you are trying to edit does not exist or has been deleted.'}
+            {isError?.message ||
+              "The post you are trying to edit does not exist or has been deleted."}
           </p>
           <Link
             href="/posts"
@@ -142,7 +145,10 @@ export default function EditPostPage() {
             d="M9 5l7 7-7 7"
           />
         </svg>
-        <Link href={`/posts/${post.id}`} className="hover:text-primary-600 truncate max-w-xs">
+        <Link
+          href={`/posts/${post.id}`}
+          className="hover:text-primary-600 truncate max-w-xs"
+        >
           {post.title}
         </Link>
         <svg
@@ -168,7 +174,7 @@ export default function EditPostPage() {
           initialData={{
             title: post.title,
             content: post.content,
-            author: post.author || '',
+            author: post.author || "",
           }}
           onSubmit={handleSubmit}
           submitLabel="Update Post"
@@ -195,14 +201,19 @@ export default function EditPostPage() {
           </svg>
           <div className="text-sm text-yellow-700">
             <p className="font-medium mb-1">Note:</p>
-            <p>Changes will be saved immediately when you click "Update Post". Make sure to review your changes before submitting.</p>
+            <p>
+              Changes will be saved immediately when you click "Update Post".
+              Make sure to review your changes before submitting.
+            </p>
           </div>
         </div>
       </div>
 
       {/* Post Metadata */}
       <div className="mt-6 bg-gray-50 border border-gray-200 rounded-md p-4">
-        <h3 className="text-sm font-semibold text-gray-700 mb-2">Post Information</h3>
+        <h3 className="text-sm font-semibold text-gray-700 mb-2">
+          Post Information
+        </h3>
         <dl className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
           <div>
             <dt className="text-gray-500">Post ID:</dt>
@@ -211,20 +222,20 @@ export default function EditPostPage() {
           <div>
             <dt className="text-gray-500">Created:</dt>
             <dd className="text-gray-900 font-medium">
-              {new Date(post.createdAt).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric',
+              {new Date(post.createdAt).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
               })}
             </dd>
           </div>
           <div>
             <dt className="text-gray-500">Last Updated:</dt>
             <dd className="text-gray-900 font-medium">
-              {new Date(post.updatedAt).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric',
+              {new Date(post.updatedAt).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
               })}
             </dd>
           </div>

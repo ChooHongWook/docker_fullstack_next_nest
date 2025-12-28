@@ -1,38 +1,18 @@
 'use client';
 
-import { useState } from 'react';
 import Link from 'next/link';
-import { usePosts } from '@/hooks/usePosts';
-import { postsApi } from '@/lib/api';
+import { usePosts, useDeletePost } from '@/hooks/usePosts';
 import PostList from '@/components/PostList';
 
 export default function PostsPage() {
-  const { posts, isLoading, isError, mutate } = usePosts();
-  const [deleteError, setDeleteError] = useState<string | null>(null);
+  const { posts, isLoading, isError } = usePosts();
+  const deletePostMutation = useDeletePost();
 
   /**
    * Handle post deletion
    */
   const handleDelete = async (id: number) => {
-    setDeleteError(null);
-
-    try {
-      // Optimistic update: remove post from UI immediately
-      const updatedPosts = posts?.filter((post) => post.id !== id);
-
-      // Update local state optimistically
-      mutate(updatedPosts, false);
-
-      // Delete on server
-      await postsApi.delete(id);
-
-      // Revalidate to ensure consistency
-      mutate();
-    } catch (error: any) {
-      // Revert optimistic update on error
-      mutate();
-      setDeleteError(error.message || 'Failed to delete post');
-    }
+    deletePostMutation.mutate(id);
   };
 
   return (
@@ -95,7 +75,7 @@ export default function PostsPage() {
           </div>
         )}
 
-        {deleteError && (
+        {deletePostMutation.isError && (
           <div className="bg-red-50 border border-red-200 rounded-md p-4 mb-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center">
@@ -113,10 +93,12 @@ export default function PostsPage() {
                     d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                   />
                 </svg>
-                <p className="text-sm text-red-600">{deleteError}</p>
+                <p className="text-sm text-red-600">
+                  {deletePostMutation.error?.message || 'Failed to delete post'}
+                </p>
               </div>
               <button
-                onClick={() => setDeleteError(null)}
+                onClick={() => deletePostMutation.reset()}
                 className="text-red-600 hover:text-red-800"
               >
                 <svg
