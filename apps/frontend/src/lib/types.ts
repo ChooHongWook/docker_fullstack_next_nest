@@ -39,13 +39,19 @@ export interface ApiResponse<T> {
 }
 
 /**
- * API error structure
+ * API error structure (interface for plain objects)
  */
 export interface ApiError {
   message: string;
   statusCode?: number;
   error?: string;
 }
+
+/**
+ * API Error Exception (class for thrown errors)
+ * Re-exported from api.ts for type imports
+ */
+export type { ApiErrorException } from './api';
 
 /**
  * Form validation errors

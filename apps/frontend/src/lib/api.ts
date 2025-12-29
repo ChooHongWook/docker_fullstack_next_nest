@@ -18,27 +18,58 @@ const apiClient: AxiosInstance = axios.create({
 });
 
 /**
+ * Custom API Error class for proper Error serialization
+ * Extends Error to ensure compatibility with React Suspense boundaries
+ */
+export class ApiErrorException extends Error {
+  public readonly statusCode?: number;
+  public readonly error?: string;
+
+  constructor(message: string, statusCode?: number, error?: string) {
+    super(message);
+    this.name = 'ApiErrorException';
+    this.statusCode = statusCode;
+    this.error = error;
+
+    // Maintains proper stack trace for where our error was thrown (only available on V8)
+    if (Error.captureStackTrace) {
+      Error.captureStackTrace(this, ApiErrorException);
+    }
+  }
+
+  /**
+   * Serialize to plain object for JSON responses
+   * This ensures the error can be safely sent over the network
+   */
+  toJSON() {
+    return {
+      name: this.name,
+      message: this.message,
+      statusCode: this.statusCode,
+      error: this.error,
+    };
+  }
+}
+
+/**
  * Error handler to normalize API errors
  */
 const handleApiError = (error: unknown): never => {
   if (axios.isAxiosError(error)) {
     const axiosError = error as AxiosError<ApiError>;
-    const apiError: ApiError = {
-      message:
-        axiosError.response?.data?.message ||
-        axiosError.message ||
-        'An unknown error occurred',
-      statusCode: axiosError.response?.status,
-      error: axiosError.response?.data?.error,
-    };
-    throw apiError;
+    const message =
+      axiosError.response?.data?.message ||
+      axiosError.message ||
+      'An unknown error occurred';
+    const statusCode = axiosError.response?.status;
+    const errorType = axiosError.response?.data?.error;
+
+    throw new ApiErrorException(message, statusCode, errorType);
   }
 
-  throw {
-    message:
-      error instanceof Error ? error.message : 'An unknown error occurred',
-    statusCode: 500,
-  } as ApiError;
+  const message =
+    error instanceof Error ? error.message : 'An unknown error occurred';
+  throw new ApiErrorException(message, 500);
 };
 
 /**

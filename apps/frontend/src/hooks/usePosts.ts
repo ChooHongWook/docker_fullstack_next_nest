@@ -1,6 +1,13 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Post, ApiError } from '@/lib/types';
+import {
+  useQuery,
+  useSuspenseQuery,
+  useMutation,
+  useQueryClient,
+} from '@tanstack/react-query';
+import { Post, ApiError, ApiErrorException } from '@/lib/types';
 import { postsApi } from '@/lib/api';
+import { useRouter } from 'next/navigation';
+import { PostFormData } from '@/lib/types';
 
 /**
  * Hook to fetch all posts with React Query
@@ -20,6 +27,22 @@ export function usePosts() {
 }
 
 /**
+ * Hook to fetch all posts with Suspense support
+ * MUST be used inside <Suspense> boundary
+ * No loading/error states - handled by Suspense/ErrorBoundary
+ */
+export function useSuspensePosts() {
+  const { data } = useSuspenseQuery<Post[], ApiErrorException>({
+    queryKey: ['posts'],
+    queryFn: () => postsApi.getAll(),
+  });
+
+  return {
+    posts: data,
+  };
+}
+
+/**
  * Hook to fetch a single post by ID with React Query
  */
 export function usePost(id: number | string | null) {
@@ -35,6 +58,64 @@ export function usePost(id: number | string | null) {
     post: data,
     isLoading,
     isError: error,
+  };
+}
+
+/**
+ * Hook to fetch a single post by ID with Suspense support
+ * MUST be used inside <Suspense> boundary
+ * No loading/error states - handled by Suspense/ErrorBoundary
+ */
+export function useSuspensePost(id: number | string) {
+  const router = useRouter();
+
+  const { data: post } = useSuspenseQuery<Post, ApiErrorException>({
+    queryKey: ['posts', id],
+    queryFn: () => postsApi.getById(id),
+  });
+
+  const deletePostMutation = useDeletePost();
+
+  /**
+   * Handle post update
+   */
+  const handleSubmit = async (data: PostFormData) => {
+    // Convert form data to UpdatePostDto
+    const updateData = {
+      title: data.title,
+      content: data.content,
+      author: data.author || undefined,
+    };
+
+    // Update post via API
+    await postsApi.update(post.id, updateData);
+
+    // Navigate to post detail page on success
+    router.push(`/posts/${post.id}`);
+  };
+
+  /**
+   * Handle post deletion
+   */
+  const handleDelete = async () => {
+    const confirmed = confirm(
+      `Are you sure you want to delete "${post.title}"? This action cannot be undone.`,
+    );
+
+    if (!confirmed) return;
+
+    deletePostMutation.mutate(post.id, {
+      onSuccess: () => {
+        router.push('/posts');
+      },
+    });
+  };
+
+  return {
+    post,
+    handleSubmit,
+    handleDelete,
+    deletePostMutation,
   };
 }
 
