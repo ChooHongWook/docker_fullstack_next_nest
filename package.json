@@ -16,7 +16,10 @@
     "logs:backend": "docker-compose logs -f backend",
     "logs:db": "docker-compose logs -f postgres",
     "frontend": "pnpm --filter frontend",
-    "backend": "pnpm --filter backend"
+    "backend": "pnpm --filter backend",
+    "lint": "pnpm --filter frontend lint && pnpm --filter backend lint",
+    "format": "pnpm --filter frontend format && pnpm --filter backend format",
+    "format:check": "pnpm --filter frontend format:check && pnpm --filter backend format:check"
   },
   "engines": {
     "node": ">=20.0.0",
