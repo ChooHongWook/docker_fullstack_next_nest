@@ -9,8 +9,9 @@ export default function HomePage() {
           Welcome to Posts App
         </h1>
         <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-8">
-          A modern, full-stack CRUD application built with Next.js 14, TypeScript, and NestJS.
-          Create, read, update, and delete posts with ease.
+          A modern, full-stack CRUD application built with Next.js 14,
+          TypeScript, and NestJS. Create, read, update, and delete posts with
+          ease.
         </p>
         <div className="flex items-center justify-center gap-4">
           <Link
@@ -47,9 +48,12 @@ export default function HomePage() {
               />
             </svg>
           </div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">Create Posts</h3>
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            Create Posts
+          </h3>
           <p className="text-gray-600">
-            Easily create new posts with a user-friendly form and real-time validation.
+            Easily create new posts with a user-friendly form and real-time
+            validation.
           </p>
         </div>
 
@@ -76,7 +80,9 @@ export default function HomePage() {
               />
             </svg>
           </div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">View Posts</h3>
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            View Posts
+          </h3>
           <p className="text-gray-600">
             Browse through all posts in a beautiful, responsive grid layout.
           </p>
@@ -99,7 +105,9 @@ export default function HomePage() {
               />
             </svg>
           </div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">Edit Posts</h3>
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            Edit Posts
+          </h3>
           <p className="text-gray-600">
             Update your posts anytime with an intuitive editing interface.
           </p>
@@ -122,7 +130,9 @@ export default function HomePage() {
               />
             </svg>
           </div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">Delete Posts</h3>
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            Delete Posts
+          </h3>
           <p className="text-gray-600">
             Remove posts with confirmation to keep your content organized.
           </p>
@@ -136,19 +146,27 @@ export default function HomePage() {
         </h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
           <div>
-            <div className="text-3xl font-bold text-primary-600 mb-1">Next.js 14</div>
+            <div className="text-3xl font-bold text-primary-600 mb-1">
+              Next.js 14
+            </div>
             <div className="text-sm text-gray-600">App Router</div>
           </div>
           <div>
-            <div className="text-3xl font-bold text-primary-600 mb-1">TypeScript</div>
+            <div className="text-3xl font-bold text-primary-600 mb-1">
+              TypeScript
+            </div>
             <div className="text-sm text-gray-600">Type Safety</div>
           </div>
           <div>
-            <div className="text-3xl font-bold text-primary-600 mb-1">Tailwind CSS</div>
+            <div className="text-3xl font-bold text-primary-600 mb-1">
+              Tailwind CSS
+            </div>
             <div className="text-sm text-gray-600">Styling</div>
           </div>
           <div>
-            <div className="text-3xl font-bold text-primary-600 mb-1">NestJS</div>
+            <div className="text-3xl font-bold text-primary-600 mb-1">
+              NestJS
+            </div>
             <div className="text-sm text-gray-600">Backend API</div>
           </div>
         </div>

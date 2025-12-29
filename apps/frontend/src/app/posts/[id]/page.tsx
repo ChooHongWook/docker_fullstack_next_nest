@@ -19,7 +19,7 @@ export default function ViewPostPage() {
     if (!post) return;
 
     const confirmed = confirm(
-      `Are you sure you want to delete "${post.title}"? This action cannot be undone.`
+      `Are you sure you want to delete "${post.title}"? This action cannot be undone.`,
     );
 
     if (!confirmed) return;
@@ -79,9 +79,12 @@ export default function ViewPostPage() {
               d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
             />
           </svg>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Post Not Found</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">
+            Post Not Found
+          </h2>
           <p className="text-gray-600 mb-6">
-            {isError?.message || 'The post you are looking for does not exist or has been deleted.'}
+            {isError?.message ||
+              'The post you are looking for does not exist or has been deleted.'}
           </p>
           <Link
             href="/posts"
@@ -187,7 +190,9 @@ export default function ViewPostPage() {
       <article className="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden">
         {/* Post Header */}
         <div className="px-8 py-6 border-b border-gray-200 bg-gradient-to-r from-primary-50 to-blue-50">
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">{post.title}</h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-4">
+            {post.title}
+          </h1>
           <div className="flex items-center justify-between text-sm text-gray-600">
             <div className="flex items-center space-x-4">
               <div className="flex items-center">
@@ -205,7 +210,9 @@ export default function ViewPostPage() {
                     d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                   />
                 </svg>
-                <span className="font-medium">{post.author || 'Anonymous'}</span>
+                <span className="font-medium">
+                  {post.author || 'Anonymous'}
+                </span>
               </div>
               <div className="flex items-center">
                 <svg

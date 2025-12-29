@@ -143,6 +143,7 @@ Configure the API URL via the `NEXT_PUBLIC_API_URL` environment variable.
 ## Features Detail
 
 ### Posts List Page
+
 - Grid layout (responsive: 1/2/3 columns)
 - Empty state when no posts
 - Loading skeletons
@@ -150,6 +151,7 @@ Configure the API URL via the `NEXT_PUBLIC_API_URL` environment variable.
 - Create new post button
 
 ### Create Post Page
+
 - Form validation
 - Required fields: title, content
 - Optional field: author
@@ -157,6 +159,7 @@ Configure the API URL via the `NEXT_PUBLIC_API_URL` environment variable.
 - Success redirect
 
 ### View Post Page
+
 - Full post details
 - Author and date information
 - Edit and delete actions
@@ -164,6 +167,7 @@ Configure the API URL via the `NEXT_PUBLIC_API_URL` environment variable.
 - 404 handling
 
 ### Edit Post Page
+
 - Pre-filled form with post data
 - Same validation as create
 - Update confirmation

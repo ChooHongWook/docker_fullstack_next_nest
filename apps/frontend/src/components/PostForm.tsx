@@ -14,7 +14,6 @@ interface PostFormProps {
   initialData?: Partial<PostFormData>;
   onSubmit: (data: PostFormData) => Promise<void>;
   submitLabel?: string;
-  isEdit?: boolean;
 }
 
 /**
@@ -25,7 +24,6 @@ export default function PostForm({
   initialData = {},
   onSubmit,
   submitLabel = 'Submit',
-  isEdit = false,
 }: PostFormProps) {
   const router = useRouter();
   const [formData, setFormData] = useState<PostFormData>({
@@ -47,21 +45,36 @@ export default function PostForm({
     if (!formData.title.trim()) {
       newErrors.push({ field: 'title', message: 'Title is required' });
     } else if (formData.title.length < 3) {
-      newErrors.push({ field: 'title', message: 'Title must be at least 3 characters' });
+      newErrors.push({
+        field: 'title',
+        message: 'Title must be at least 3 characters',
+      });
     } else if (formData.title.length > 200) {
-      newErrors.push({ field: 'title', message: 'Title must be less than 200 characters' });
+      newErrors.push({
+        field: 'title',
+        message: 'Title must be less than 200 characters',
+      });
     }
 
     if (!formData.content.trim()) {
       newErrors.push({ field: 'content', message: 'Content is required' });
     } else if (formData.content.length < 10) {
-      newErrors.push({ field: 'content', message: 'Content must be at least 10 characters' });
+      newErrors.push({
+        field: 'content',
+        message: 'Content must be at least 10 characters',
+      });
     } else if (formData.content.length > 10000) {
-      newErrors.push({ field: 'content', message: 'Content must be less than 10000 characters' });
+      newErrors.push({
+        field: 'content',
+        message: 'Content must be less than 10000 characters',
+      });
     }
 
     if (formData.author && formData.author.length > 100) {
-      newErrors.push({ field: 'author', message: 'Author name must be less than 100 characters' });
+      newErrors.push({
+        field: 'author',
+        message: 'Author name must be less than 100 characters',
+      });
     }
 
     setErrors(newErrors);
@@ -91,8 +104,12 @@ export default function PostForm({
     try {
       await onSubmit(formData);
       // Success - parent component handles navigation
-    } catch (error: any) {
-      setSubmitError(error.message || 'An error occurred while submitting the form');
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : 'An error occurred while submitting the form';
+      setSubmitError(errorMessage);
     } finally {
       setIsSubmitting(false);
     }
@@ -102,7 +119,7 @@ export default function PostForm({
    * Handle input change
    */
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -158,7 +175,9 @@ export default function PostForm({
           placeholder="Enter post content"
           disabled={isSubmitting}
           aria-invalid={!!getFieldError('content')}
-          aria-describedby={getFieldError('content') ? 'content-error' : undefined}
+          aria-describedby={
+            getFieldError('content') ? 'content-error' : undefined
+          }
         />
         {getFieldError('content') && (
           <p id="content-error" className="text-sm text-destructive">
@@ -180,7 +199,9 @@ export default function PostForm({
           placeholder="Enter author name (optional)"
           disabled={isSubmitting}
           aria-invalid={!!getFieldError('author')}
-          aria-describedby={getFieldError('author') ? 'author-error' : undefined}
+          aria-describedby={
+            getFieldError('author') ? 'author-error' : undefined
+          }
         />
         {getFieldError('author') && (
           <p id="author-error" className="text-sm text-destructive">
@@ -206,10 +227,7 @@ export default function PostForm({
         >
           Cancel
         </Button>
-        <Button
-          type="submit"
-          disabled={isSubmitting}
-        >
+        <Button type="submit" disabled={isSubmitting}>
           {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
           {isSubmitting ? 'Submitting...' : submitLabel}
         </Button>

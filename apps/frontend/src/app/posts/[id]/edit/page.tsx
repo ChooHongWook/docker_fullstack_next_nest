@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import { useParams, useRouter } from "next/navigation";
-import Link from "next/link";
-import { usePost } from "@/hooks/usePosts";
-import { postsApi } from "@/lib/api";
-import PostForm from "@/components/PostForm";
-import { PostFormData } from "@/lib/types";
+import { useParams, useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { usePost } from '@/hooks/usePosts';
+import { postsApi } from '@/lib/api';
+import PostForm from '@/components/PostForm';
+import { PostFormData } from '@/lib/types';
 
 export default function EditPostPage() {
   const params = useParams();
@@ -86,7 +86,7 @@ export default function EditPostPage() {
           </h2>
           <p className="text-gray-600 mb-6">
             {isError?.message ||
-              "The post you are trying to edit does not exist or has been deleted."}
+              'The post you are trying to edit does not exist or has been deleted.'}
           </p>
           <Link
             href="/posts"
@@ -174,11 +174,10 @@ export default function EditPostPage() {
           initialData={{
             title: post.title,
             content: post.content,
-            author: post.author || "",
+            author: post.author || '',
           }}
           onSubmit={handleSubmit}
           submitLabel="Update Post"
-          isEdit={true}
         />
       </div>
 
@@ -202,8 +201,8 @@ export default function EditPostPage() {
           <div className="text-sm text-yellow-700">
             <p className="font-medium mb-1">Note:</p>
             <p>
-              Changes will be saved immediately when you click "Update Post".
-              Make sure to review your changes before submitting.
+              Changes will be saved immediately when you click &quot;Update
+              Post&quot;. Make sure to review your changes before submitting.
             </p>
           </div>
         </div>
@@ -222,20 +221,20 @@ export default function EditPostPage() {
           <div>
             <dt className="text-gray-500">Created:</dt>
             <dd className="text-gray-900 font-medium">
-              {new Date(post.createdAt).toLocaleDateString("en-US", {
-                year: "numeric",
-                month: "short",
-                day: "numeric",
+              {new Date(post.createdAt).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
               })}
             </dd>
           </div>
           <div>
             <dt className="text-gray-500">Last Updated:</dt>
             <dd className="text-gray-900 font-medium">
-              {new Date(post.updatedAt).toLocaleDateString("en-US", {
-                year: "numeric",
-                month: "short",
-                day: "numeric",
+              {new Date(post.updatedAt).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
               })}
             </dd>
           </div>

@@ -24,7 +24,10 @@ const handleApiError = (error: unknown): never => {
   if (axios.isAxiosError(error)) {
     const axiosError = error as AxiosError<ApiError>;
     const apiError: ApiError = {
-      message: axiosError.response?.data?.message || axiosError.message || 'An unknown error occurred',
+      message:
+        axiosError.response?.data?.message ||
+        axiosError.message ||
+        'An unknown error occurred',
       statusCode: axiosError.response?.status,
       error: axiosError.response?.data?.error,
     };
@@ -32,7 +35,8 @@ const handleApiError = (error: unknown): never => {
   }
 
   throw {
-    message: error instanceof Error ? error.message : 'An unknown error occurred',
+    message:
+      error instanceof Error ? error.message : 'An unknown error occurred',
     statusCode: 500,
   } as ApiError;
 };

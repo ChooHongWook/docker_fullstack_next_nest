@@ -57,7 +57,7 @@ export function useDeletePost() {
       if (previousPosts) {
         queryClient.setQueryData<Post[]>(
           ['posts'],
-          previousPosts.filter((post) => post.id !== deletedId)
+          previousPosts.filter((post) => post.id !== deletedId),
         );
       }
 

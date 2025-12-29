@@ -3,7 +3,12 @@
 import { FileText } from 'lucide-react';
 import { Post } from '@/lib/types';
 import PostCard from './PostCard';
-import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from '@/components/ui/card';
 
 interface PostListProps {
   posts: Post[];
@@ -15,7 +20,11 @@ interface PostListProps {
  * PostList Component
  * Displays a responsive grid of PostCard components
  */
-export default function PostList({ posts, isLoading, onDelete }: PostListProps) {
+export default function PostList({
+  posts,
+  isLoading,
+  onDelete,
+}: PostListProps) {
   // Loading skeleton
   if (isLoading) {
     return (
@@ -51,10 +60,14 @@ export default function PostList({ posts, isLoading, onDelete }: PostListProps) 
   if (!posts || posts.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-16 px-4">
-        <FileText className="w-24 h-24 text-muted-foreground/50 mb-4" strokeWidth={1.5} />
+        <FileText
+          className="w-24 h-24 text-muted-foreground/50 mb-4"
+          strokeWidth={1.5}
+        />
         <h3 className="text-xl font-semibold mb-2">No posts yet</h3>
         <p className="text-muted-foreground text-center max-w-md">
-          Get started by creating your first post. Share your thoughts, ideas, and stories with the world!
+          Get started by creating your first post. Share your thoughts, ideas,
+          and stories with the world!
         </p>
       </div>
     );

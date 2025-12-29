@@ -122,7 +122,11 @@ export default function PostsPage() {
       </div>
 
       {/* Posts List */}
-      <PostList posts={posts || []} isLoading={isLoading} onDelete={handleDelete} />
+      <PostList
+        posts={posts || []}
+        isLoading={isLoading}
+        onDelete={handleDelete}
+      />
     </div>
   );
 }
