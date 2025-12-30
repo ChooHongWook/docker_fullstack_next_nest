@@ -1,32 +1,29 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
-import { Post } from './entities/post.entity';
+import { PrismaService } from '../prisma/prisma.service';
+import { Post } from '@prisma/client';
 
 @Injectable()
 export class PostsService {
-  constructor(
-    @InjectRepository(Post)
-    private readonly postsRepository: Repository<Post>,
-  ) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   async create(createPostDto: CreatePostDto): Promise<Post> {
-    const post = this.postsRepository.create(createPostDto);
-    return await this.postsRepository.save(post);
+    return this.prisma.post.create({
+      data: createPostDto,
+    });
   }
 
   async findAll(): Promise<Post[]> {
-    return await this.postsRepository.find({
-      order: {
-        createdAt: 'DESC',
+    return this.prisma.post.findMany({
+      orderBy: {
+        createdAt: 'desc',
       },
     });
   }
 
   async findOne(id: number): Promise<Post> {
-    const post = await this.postsRepository.findOne({
+    const post = await this.prisma.post.findUnique({
       where: { id },
     });
 
@@ -38,15 +35,18 @@ export class PostsService {
   }
 
   async update(id: number, updatePostDto: UpdatePostDto): Promise<Post> {
-    const post = await this.findOne(id);
+    await this.findOne(id);
 
-    Object.assign(post, updatePostDto);
-
-    return await this.postsRepository.save(post);
+    return this.prisma.post.update({
+      where: { id },
+      data: updatePostDto,
+    });
   }
 
   async remove(id: number): Promise<void> {
-    const post = await this.findOne(id);
-    await this.postsRepository.remove(post);
+    await this.findOne(id);
+    await this.prisma.post.delete({
+      where: { id },
+    });
   }
 }

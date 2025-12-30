@@ -3,7 +3,14 @@
     "allow": [
       "Bash(pnpm install:*)",
       "Bash(pnpm lint:*)",
-      "Bash(pnpm format:*)"
+      "Bash(pnpm format:*)",
+      "Bash(xargs ls:*)",
+      "Bash(pnpm remove:*)",
+      "Bash(pnpm add:*)",
+      "Bash(npx prisma init)",
+      "Bash(npx prisma migrate:*)",
+      "Bash(npx prisma generate:*)",
+      "Bash(pnpm run build:*)"
     ]
   }
 }

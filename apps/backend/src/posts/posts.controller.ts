@@ -13,7 +13,7 @@ import {
 import { PostsService } from './posts.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
-import { Post as PostEntity } from './entities/post.entity';
+import { Post as PostEntity } from '@prisma/client';
 
 @Controller('posts')
 export class PostsController {
