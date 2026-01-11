@@ -19,10 +19,31 @@
     "backend": "pnpm --filter backend",
     "lint": "pnpm --filter frontend lint && pnpm --filter backend lint",
     "format": "pnpm --filter frontend format && pnpm --filter backend format",
-    "format:check": "pnpm --filter frontend format:check && pnpm --filter backend format:check"
+    "format:check": "pnpm --filter frontend format:check && pnpm --filter backend format:check",
+    "prepare": "husky"
   },
   "engines": {
     "node": ">=20.0.0",
     "pnpm": ">=8.0.0"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^20.3.1",
+    "@commitlint/config-conventional": "^20.3.1",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.7",
+    "prettier": "^3.7.4"
+  },
+  "lint-staged": {
+    "apps/frontend/**/*.{ts,tsx,js,jsx}": [
+      "pnpm --filter frontend lint",
+      "pnpm --filter frontend format"
+    ],
+    "apps/backend/**/*.ts": [
+      "pnpm --filter backend lint",
+      "pnpm --filter backend format"
+    ],
+    "*.{json,md}": [
+      "prettier --write"
+    ]
   }
 }

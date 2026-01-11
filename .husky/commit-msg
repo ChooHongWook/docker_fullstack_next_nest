@@ -1,0 +1,2 @@
+# Uncomment the following line to enable conventional commit message validation
+pnpm exec commitlint --edit $1
