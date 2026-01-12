@@ -2,12 +2,19 @@ import Link from 'next/link';
 import { useSuspensePost } from '@/hooks/usePosts';
 
 import { formatDate } from '@/lib/utils';
+import { Suspense } from 'react';
+import { PostDetailSkeleton } from './post-detail-skeleton';
+
+import {
+  ErrorBoundary,
+  PostDetailErrorFallback,
+} from '@/components/ErrorBoundary';
 
 /**
  * Post Content - Data fetching component
  * MUST be wrapped with ErrorBoundary > Suspense
  */
-export function PostContent({ id }: { id: string }) {
+export function Ui({ id }: { id: string }) {
   const { post, handleDelete, deletePostMutation } = useSuspensePost(id);
 
   return (
@@ -258,5 +265,17 @@ export function PostContent({ id }: { id: string }) {
         </div>
       </article>
     </>
+  );
+}
+
+export function PostContent({ id }: { id: string }) {
+  return (
+    <div>
+      <ErrorBoundary fallback={<PostDetailErrorFallback />}>
+        <Suspense fallback={<PostDetailSkeleton />}>
+          <Ui id={id} />
+        </Suspense>
+      </ErrorBoundary>
+    </div>
   );
 }
