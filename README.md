@@ -4,8 +4,9 @@ Complete Docker-based fullstack application with Next.js frontend, NestJS backen
 
 ## Features
 
-- **Frontend**: Modern Next.js 14 with TypeScript, Tailwind CSS, and SWR
-- **Backend**: NestJS with TypeORM and PostgreSQL
+### Core Features
+- **Frontend**: Modern Next.js 14 with TypeScript, Tailwind CSS, and React Query
+- **Backend**: NestJS with Prisma ORM and PostgreSQL
 - **Database**: PostgreSQL 16 in Docker with persistent volumes
 - **Monorepo**: pnpm workspaces for efficient dependency management
 - **Docker**: Complete containerization for development and production
@@ -13,6 +14,15 @@ Complete Docker-based fullstack application with Next.js frontend, NestJS backen
 - **Hot Reload**: Development mode with live code updates
 - **Type Safety**: Full TypeScript support across the stack
 - **Responsive UI**: Mobile-first design that works on all devices
+
+### Authentication & Authorization
+- **JWT Authentication**: Access token (15min) + Refresh token (7d)
+- **Cookie-based Storage**: HttpOnly cookies for XSS protection
+- **OAuth 2.0**: Google, GitHub, Kakao integration
+- **RBAC System**: Role-Based Access Control with permissions
+- **Token Refresh**: Automatic token refresh with retry queue
+- **Route Protection**: Next.js middleware for protected routes
+- **Session Management**: Redis + PostgreSQL hybrid storage
 
 ## Technology Stack
 
