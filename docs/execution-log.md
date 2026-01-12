@@ -299,3 +299,63 @@ Implementation of JWT + OAuth2 authentication system with RBAC
 
 ---
 
+## Phase 4: Update Posts Module
+
+### Status: ✅ Completed
+
+**Changes**:
+- Removed `author` field from CreatePostDto and UpdatePostDto
+- Updated PostsService.create() to accept authorId parameter
+- Updated PostsController with authentication decorators:
+  - GET endpoints marked with @Public() (accessible without auth)
+  - POST endpoint requires @Permissions('posts:create')
+  - PATCH endpoint requires @Permissions('posts:update') + ownership check
+  - DELETE endpoint requires @Permissions('posts:delete') + ownership check
+- Added ownership validation (users can only modify their own posts, except ADMIN)
+
+**Files Modified**:
+- [apps/backend/src/posts/dto/create-post.dto.ts](../apps/backend/src/posts/dto/create-post.dto.ts)
+- [apps/backend/src/posts/dto/update-post.dto.ts](../apps/backend/src/posts/dto/update-post.dto.ts)
+- [apps/backend/src/posts/posts.service.ts](../apps/backend/src/posts/posts.service.ts)
+- [apps/backend/src/posts/posts.controller.ts](../apps/backend/src/posts/posts.controller.ts)
+
+---
+
+## Phase 5-6: Frontend API Client & Auth Types
+
+### Status: ✅ Completed
+
+**API Client Updates** ([apps/frontend/src/lib/api.ts](../apps/frontend/src/lib/api.ts)):
+- Added `withCredentials: true` to axios config for cookie authentication
+- Implemented token refresh interceptor with queue pattern
+- Created authApi with register, login, logout, getCurrentUser, refreshToken methods
+
+**Auth Types** ([apps/frontend/src/lib/types.ts](../apps/frontend/src/lib/types.ts)):
+- Added User, Role, Permission interfaces with full hierarchy
+- Created RegisterDto, LoginDto, LoginResponse interfaces
+
+---
+
+## Phase 7-8: Frontend Auth Hooks & Pages
+
+### Status: ✅ Completed
+
+**Auth Hooks** ([apps/frontend/src/hooks/useAuth.ts](../apps/frontend/src/hooks/useAuth.ts)):
+- useCurrentUser, useLogin, useRegister, useLogout
+- useHasRole, useHasPermission helper hooks
+
+**Pages**:
+- [apps/frontend/src/app/login/page.tsx](../apps/frontend/src/app/login/page.tsx) - Login form
+- [apps/frontend/src/app/register/page.tsx](../apps/frontend/src/app/register/page.tsx) - Registration form
+
+---
+
+## Testing Results
+
+### Backend Authentication: ✅ All Passed
+- Registration, login, /auth/me endpoints working
+- HttpOnly cookies set correctly
+- Roles and permissions loaded properly
+
+---
+
