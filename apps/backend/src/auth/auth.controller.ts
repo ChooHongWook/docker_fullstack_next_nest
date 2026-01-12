@@ -16,6 +16,9 @@ import { TokenService } from './token.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { LocalAuthGuard } from './guards/local-auth.guard';
+import { GoogleAuthGuard } from './guards/google-auth.guard';
+import { GithubAuthGuard } from './guards/github-auth.guard';
+import { KakaoAuthGuard } from './guards/kakao-auth.guard';
 import { Public } from './decorators/public.decorator';
 import { CurrentUser } from './decorators/current-user.decorator';
 import { User } from '@prisma/client';
@@ -147,5 +150,99 @@ export class AuthController {
   async getCurrentUser(@CurrentUser() user: User) {
     const { password, ...userWithoutPassword } = user;
     return userWithoutPassword;
+  }
+
+  // OAuth Routes
+  @Public()
+  @Get('google')
+  @UseGuards(GoogleAuthGuard)
+  async googleAuth() {
+    // Initiates Google OAuth flow
+  }
+
+  @Public()
+  @Get('google/callback')
+  @UseGuards(GoogleAuthGuard)
+  async googleAuthCallback(
+    @CurrentUser() user: User,
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    return this.handleOAuthCallback(user, req, res);
+  }
+
+  @Public()
+  @Get('github')
+  @UseGuards(GithubAuthGuard)
+  async githubAuth() {
+    // Initiates GitHub OAuth flow
+  }
+
+  @Public()
+  @Get('github/callback')
+  @UseGuards(GithubAuthGuard)
+  async githubAuthCallback(
+    @CurrentUser() user: User,
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    return this.handleOAuthCallback(user, req, res);
+  }
+
+  @Public()
+  @Get('kakao')
+  @UseGuards(KakaoAuthGuard)
+  async kakaoAuth() {
+    // Initiates Kakao OAuth flow
+  }
+
+  @Public()
+  @Get('kakao/callback')
+  @UseGuards(KakaoAuthGuard)
+  async kakaoAuthCallback(
+    @CurrentUser() user: User,
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    return this.handleOAuthCallback(user, req, res);
+  }
+
+  // Common OAuth callback handler
+  private async handleOAuthCallback(
+    user: User,
+    req: Request,
+    res: Response,
+  ) {
+    const roles = (user as any).roles.map((ur: any) => ur.role.name);
+    const payload = { sub: user.id, email: user.email, roles };
+
+    const { accessToken, refreshToken } =
+      this.tokenService.generateTokenPair(payload);
+
+    res.cookie('access_token', accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 15 * 60 * 1000, // 15 minutes
+    });
+
+    res.cookie('refresh_token', refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
+
+    await this.authService.createRefreshToken(
+      user.id,
+      refreshToken,
+      req.headers['x-device-id'] as string,
+      req.ip,
+      req.headers['user-agent'],
+    );
+
+    // Redirect to frontend
+    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+    res.redirect(`${frontendUrl}/?oauth=success`);
   }
 }

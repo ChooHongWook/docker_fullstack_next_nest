@@ -7,8 +7,14 @@ import { TokenService } from './token.service';
 import { AuthController } from './auth.controller';
 import { LocalStrategy } from './strategies/local.strategy';
 import { JwtStrategy } from './strategies/jwt.strategy';
+import { GoogleStrategy } from './strategies/google.strategy';
+import { GithubStrategy } from './strategies/github.strategy';
+import { KakaoStrategy } from './strategies/kakao.strategy';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { LocalAuthGuard } from './guards/local-auth.guard';
+import { GoogleAuthGuard } from './guards/google-auth.guard';
+import { GithubAuthGuard } from './guards/github-auth.guard';
+import { KakaoAuthGuard } from './guards/kakao-auth.guard';
 import { RolesGuard } from './guards/roles.guard';
 import { PermissionsGuard } from './guards/permissions.guard';
 import { PrismaModule } from '../prisma/prisma.module';
@@ -35,8 +41,14 @@ import { RedisModule } from '../redis/redis.module';
     TokenService,
     LocalStrategy,
     JwtStrategy,
+    GoogleStrategy,
+    GithubStrategy,
+    KakaoStrategy,
     JwtAuthGuard,
     LocalAuthGuard,
+    GoogleAuthGuard,
+    GithubAuthGuard,
+    KakaoAuthGuard,
     RolesGuard,
     PermissionsGuard,
   ],
