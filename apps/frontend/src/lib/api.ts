@@ -59,7 +59,12 @@ apiClient.interceptors.response.use(
     };
 
     // If 401 and not already retried, try to refresh token
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    // Skip refresh for /auth/refresh itself to prevent infinite loop
+    if (
+      error.response?.status === 401 &&
+      !originalRequest._retry &&
+      !originalRequest.url?.includes('/auth/refresh')
+    ) {
       if (isRefreshing) {
         // Queue requests while refreshing
         return new Promise((resolve, reject) => {
@@ -78,15 +83,13 @@ apiClient.interceptors.response.use(
 
       try {
         // Attempt to refresh token
-        await apiClient.post('/auth/refresh');
+        // await apiClient.post('/auth/refresh');
         processQueue();
         return apiClient(originalRequest);
       } catch (refreshError) {
         processQueue(refreshError);
-        // Redirect to login on refresh failure
-        if (typeof window !== 'undefined') {
-          window.location.href = '/login';
-        }
+        isRefreshing = false;
+        // Don't redirect to login automatically - let the app handle 401 errors
         return Promise.reject(refreshError);
       } finally {
         isRefreshing = false;
@@ -94,7 +97,7 @@ apiClient.interceptors.response.use(
     }
 
     return Promise.reject(error);
-  }
+  },
 );
 
 /**

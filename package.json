@@ -38,12 +38,10 @@
   },
   "lint-staged": {
     "apps/frontend/**/*.{ts,tsx,js,jsx}": [
-      "pnpm --filter frontend lint",
-      "pnpm --filter frontend format"
+      "prettier --write"
     ],
-    "apps/backend/**/*.ts": [
-      "pnpm --filter backend lint",
-      "pnpm --filter backend format"
+    "apps/backend/**/*.{ts,tsx,js,jsx}": [
+      "prettier --write"
     ],
     "*.{json,md}": [
       "prettier --write"

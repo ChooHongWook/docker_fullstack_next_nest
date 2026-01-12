@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { authApi } from '@/lib/api';
+import { authApi, ApiErrorException } from '@/lib/api';
 import { LoginDto, RegisterDto, User } from '@/lib/types';
 import { useRouter } from 'next/navigation';
 
@@ -17,7 +17,17 @@ export const authKeys = {
 export function useCurrentUser() {
   return useQuery({
     queryKey: authKeys.currentUser,
-    queryFn: authApi.getCurrentUser,
+    queryFn: async () => {
+      try {
+        return await authApi.getCurrentUser();
+      } catch (error) {
+        // Return null for 401 errors (not authenticated) instead of throwing
+        if (error instanceof ApiErrorException && error.statusCode === 401) {
+          return null;
+        }
+        throw error;
+      }
+    },
     retry: false,
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
@@ -99,8 +109,8 @@ export function useHasPermission(permissionName: string) {
 
   return user.roles.some((userRole) =>
     userRole.role.permissions.some(
-      (rolePermission) => rolePermission.permission.name === permissionName
-    )
+      (rolePermission) => rolePermission.permission.name === permissionName,
+    ),
   );
 }
 
@@ -113,7 +123,7 @@ export function useUserPermissions() {
   if (!user) return [];
 
   const permissions = user.roles.flatMap((userRole) =>
-    userRole.role.permissions.map((rp) => rp.permission.name)
+    userRole.role.permissions.map((rp) => rp.permission.name),
   );
 
   // Remove duplicates
