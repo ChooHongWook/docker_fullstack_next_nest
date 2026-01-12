@@ -27,13 +27,15 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     const { id, emails, displayName, photos } = profile;
 
     const email = emails[0].value;
-    const user = await this.authService.findOrCreateOAuthUser({
-      provider: 'GOOGLE',
-      providerId: id,
+    const user = await this.authService.findOrCreateOAuthUser(
       email,
-      name: displayName,
-      avatar: photos[0]?.value || null,
-    });
+      'GOOGLE',
+      id,
+      {
+        name: displayName,
+        avatar: photos[0]?.value || null,
+      },
+    );
 
     done(null, user);
   }

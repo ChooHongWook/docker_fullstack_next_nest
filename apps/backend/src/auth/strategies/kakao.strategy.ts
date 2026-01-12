@@ -29,13 +29,15 @@ export class KakaoStrategy extends PassportStrategy(Strategy, 'kakao') {
       _json.kakao_account?.profile?.nickname || username || 'Kakao User';
     const avatar = _json.kakao_account?.profile?.profile_image_url || null;
 
-    const user = await this.authService.findOrCreateOAuthUser({
-      provider: 'KAKAO',
-      providerId: String(id),
+    const user = await this.authService.findOrCreateOAuthUser(
       email,
-      name,
-      avatar,
-    });
+      'KAKAO',
+      String(id),
+      {
+        name,
+        avatar,
+      },
+    );
 
     return user;
   }

@@ -39,6 +39,10 @@ export class RedisService implements OnModuleInit {
     return result === 1;
   }
 
+  async flushdb(): Promise<void> {
+    await this.redis.flushdb();
+  }
+
   // Refresh token specific methods
   async setRefreshToken(
     tokenHash: string,

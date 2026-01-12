@@ -26,13 +26,15 @@ export class GithubStrategy extends PassportStrategy(Strategy, 'github') {
     const { id, emails, displayName, photos } = profile;
 
     const email = emails?.[0]?.value || `${id}@github.placeholder.com`;
-    const user = await this.authService.findOrCreateOAuthUser({
-      provider: 'GITHUB',
-      providerId: id,
+    const user = await this.authService.findOrCreateOAuthUser(
       email,
-      name: displayName || profile.username || 'GitHub User',
-      avatar: photos?.[0]?.value || null,
-    });
+      'GITHUB',
+      id,
+      {
+        name: displayName || profile.username || 'GitHub User',
+        avatar: photos?.[0]?.value || null,
+      },
+    );
 
     return user;
   }
