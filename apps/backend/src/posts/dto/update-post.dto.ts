@@ -9,9 +9,4 @@ export class UpdatePostDto {
   @IsOptional()
   @IsString()
   content?: string;
-
-  @IsOptional()
-  @IsString()
-  @MaxLength(100)
-  author?: string;
 }

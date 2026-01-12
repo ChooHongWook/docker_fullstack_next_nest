@@ -10,7 +10,22 @@
       "Bash(npx prisma init)",
       "Bash(npx prisma migrate:*)",
       "Bash(npx prisma generate:*)",
-      "Bash(pnpm run build:*)"
+      "Bash(pnpm run build:*)",
+      "Bash(pnpm --filter backend add:*)",
+      "Bash(pnpm --filter backend remove @types/pg)",
+      "Bash(ls:*)",
+      "Bash(test:*)",
+      "Bash(git diff:*)",
+      "Bash(pnpm prisma:generate:*)",
+      "Bash(docker ps:*)",
+      "Bash(pnpm prisma:migrate:*)",
+      "Bash(DATABASE_URL=\"postgresql://postgres:postgres@localhost:5432/posts_db?schema=public\" pnpm prisma migrate:*)",
+      "Bash(DATABASE_URL=\"postgresql://postgres:postgres@localhost:5432/posts_db?schema=public\" pnpm prisma migrate dev:*)",
+      "Bash(pnpm backend build:*)",
+      "Bash(pnpm dev:*)",
+      "Bash(curl:*)",
+      "Bash(docker-compose restart:*)",
+      "Bash(docker-compose build:*)"
     ]
   }
 }

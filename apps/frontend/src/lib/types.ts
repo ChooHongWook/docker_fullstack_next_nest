@@ -69,3 +69,82 @@ export interface PostFormData {
   content: string;
   author: string;
 }
+
+/**
+ * Authentication Types
+ */
+
+export type AuthProvider = 'LOCAL' | 'GOOGLE' | 'GITHUB' | 'KAKAO';
+
+export interface Permission {
+  id: string;
+  name: string;
+  description: string;
+  resource: string;
+  action: string;
+  createdAt: Date | string;
+}
+
+export interface RolePermission {
+  id: string;
+  roleId: string;
+  permissionId: string;
+  grantedAt: Date | string;
+  permission: Permission;
+}
+
+export interface Role {
+  id: string;
+  name: string;
+  description: string;
+  createdAt: Date | string;
+  updatedAt: Date | string;
+  permissions: RolePermission[];
+}
+
+export interface UserRole {
+  id: string;
+  userId: string;
+  roleId: string;
+  assignedAt: Date | string;
+  role: Role;
+}
+
+export interface User {
+  id: string;
+  email: string;
+  name: string;
+  avatar: string | null;
+  bio: string | null;
+  phone: string | null;
+  provider: AuthProvider;
+  providerId: string | null;
+  isActive: boolean;
+  emailVerified: boolean;
+  createdAt: Date | string;
+  updatedAt: Date | string;
+  lastLoginAt: Date | string | null;
+  roles: UserRole[];
+}
+
+export interface RegisterDto {
+  email: string;
+  password: string;
+  name: string;
+}
+
+export interface LoginDto {
+  email: string;
+  password: string;
+}
+
+export interface LoginResponse {
+  user: User;
+  message: string;
+}
+
+export interface AuthError {
+  message: string;
+  statusCode: number;
+  error: string;
+}
