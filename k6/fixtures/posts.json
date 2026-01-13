@@ -1,0 +1,42 @@
+[
+  {
+    "title": "Getting Started with Next.js 14",
+    "content": "Next.js 14 introduces powerful features like Server Actions, improved Turbopack, and enhanced metadata handling. This guide will help you get started with building modern web applications."
+  },
+  {
+    "title": "Introduction to NestJS Backend Development",
+    "content": "NestJS is a progressive Node.js framework for building efficient and scalable server-side applications. Learn about modules, controllers, and services in this comprehensive guide."
+  },
+  {
+    "title": "PostgreSQL Performance Optimization Tips",
+    "content": "Discover essential PostgreSQL optimization techniques including indexing strategies, query optimization, connection pooling, and database configuration tuning for production environments."
+  },
+  {
+    "title": "Docker Compose Best Practices",
+    "content": "Learn how to effectively use Docker Compose for local development and production deployments. Covers networking, volumes, environment variables, and multi-stage builds."
+  },
+  {
+    "title": "Load Testing with k6: A Complete Guide",
+    "content": "Master performance testing using Grafana k6. This guide covers smoke tests, load tests, stress tests, and spike tests with practical examples and threshold configurations."
+  },
+  {
+    "title": "Monitoring with Prometheus and Grafana",
+    "content": "Set up comprehensive monitoring for your applications using Prometheus for metrics collection and Grafana for visualization. Includes alerting rules and dashboard configuration."
+  },
+  {
+    "title": "React Query vs SWR: Choosing the Right Data Fetching Library",
+    "content": "Compare React Query and SWR for managing server state in React applications. Explore caching strategies, optimistic updates, and real-time data synchronization."
+  },
+  {
+    "title": "TypeScript Advanced Types and Patterns",
+    "content": "Dive deep into TypeScript's advanced type system including conditional types, mapped types, template literal types, and utility types for building type-safe applications."
+  },
+  {
+    "title": "Building RESTful APIs with NestJS",
+    "content": "Step-by-step guide to creating RESTful APIs using NestJS. Covers routing, validation, error handling, authentication, and API documentation with Swagger."
+  },
+  {
+    "title": "Prisma ORM: Modern Database Toolkit",
+    "content": "Learn how to use Prisma for type-safe database access in Node.js. Covers schema design, migrations, queries, and the new PostgreSQL adapter for optimal performance."
+  }
+]

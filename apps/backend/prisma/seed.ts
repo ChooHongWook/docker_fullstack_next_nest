@@ -238,10 +238,99 @@ async function main() {
 
   console.log('✅ Test regular user created (user@example.com / User123!)');
 
+  // Create k6 load test users
+  console.log('Creating k6 load test users...');
+
+  const k6Users = [
+    {
+      email: 'loadtest@example.com',
+      password: 'TestPassword123!',
+      name: 'Load Test User',
+    },
+    {
+      email: 'user1@test.com',
+      password: 'Password123!',
+      name: 'Test User 1',
+    },
+    {
+      email: 'user2@test.com',
+      password: 'Password123!',
+      name: 'Test User 2',
+    },
+    {
+      email: 'user3@test.com',
+      password: 'Password123!',
+      name: 'Test User 3',
+    },
+  ];
+
+  for (const userData of k6Users) {
+    const hashedPwd = await bcrypt.hash(userData.password, 10);
+
+    const user = await prisma.user.upsert({
+      where: { email: userData.email },
+      update: {},
+      create: {
+        email: userData.email,
+        password: hashedPwd,
+        name: userData.name,
+        provider: 'LOCAL',
+        emailVerified: true,
+        isActive: true,
+      },
+    });
+
+    // Assign USER role
+    await prisma.userRole.upsert({
+      where: {
+        userId_roleId: {
+          userId: user.id,
+          roleId: userRole.id,
+        },
+      },
+      update: {},
+      create: {
+        userId: user.id,
+        roleId: userRole.id,
+      },
+    });
+
+    console.log(`  ✅ ${user.email}`);
+  }
+
+  console.log('✅ k6 load test users created');
+
+  // Create sample posts for load testing
+  console.log('Creating sample posts for k6...');
+
+  const loadTestUser = await prisma.user.findUnique({
+    where: { email: 'loadtest@example.com' },
+  });
+
+  if (loadTestUser) {
+    const samplePosts = Array.from({ length: 100 }, (_, i) => ({
+      title: `Sample Post ${i + 1}`,
+      content: `This is sample post content for post number ${i + 1}. Created for k6 load testing purposes. Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
+      authorId: loadTestUser.id,
+    }));
+
+    await prisma.post.createMany({
+      data: samplePosts,
+      skipDuplicates: true,
+    });
+
+    console.log('✅ Created 100 sample posts for k6');
+  }
+
   console.log('🎉 Seed completed successfully!');
   console.log('\nTest Accounts:');
   console.log('  Admin: admin@example.com / Admin123!');
   console.log('  User:  user@example.com / User123!');
+  console.log('\nk6 Load Test Accounts:');
+  console.log('  loadtest@example.com / TestPassword123!');
+  console.log('  user1@test.com / Password123!');
+  console.log('  user2@test.com / Password123!');
+  console.log('  user3@test.com / Password123!');
 }
 
 main()

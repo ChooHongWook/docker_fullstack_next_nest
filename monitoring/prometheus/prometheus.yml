@@ -4,6 +4,10 @@ global:
   external_labels:
     monitor: 'fullstack-monitor'
 
+# Load alert rules
+rule_files:
+  - 'k6-alerts.yml'
+
 scrape_configs:
   # Backend NestJS metrics
   - job_name: 'nestjs-backend'

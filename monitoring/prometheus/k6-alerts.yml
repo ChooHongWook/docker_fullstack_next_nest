@@ -1,0 +1,115 @@
+groups:
+  - name: k6_load_testing
+    interval: 30s
+    rules:
+      # High error rate during load test
+      - alert: K6HighErrorRate
+        expr: |
+          rate(k6_http_req_failed_total[5m]) / rate(k6_http_reqs_total[5m]) > 0.05
+        for: 2m
+        labels:
+          severity: warning
+          component: k6
+        annotations:
+          summary: "High error rate during k6 load test"
+          description: "Error rate is {{ $value | humanizePercentage }} (threshold: 5%)"
+
+      # Critical error rate
+      - alert: K6CriticalErrorRate
+        expr: |
+          rate(k6_http_req_failed_total[5m]) / rate(k6_http_reqs_total[5m]) > 0.2
+        for: 1m
+        labels:
+          severity: critical
+          component: k6
+        annotations:
+          summary: "Critical error rate during k6 load test"
+          description: "Error rate is {{ $value | humanizePercentage }} (threshold: 20%)"
+
+      # Slow response time (p95)
+      - alert: K6SlowResponseTime
+        expr: |
+          histogram_quantile(0.95, rate(k6_http_req_duration_bucket[5m])) > 1000
+        for: 3m
+        labels:
+          severity: warning
+          component: k6
+        annotations:
+          summary: "Slow response time during k6 test"
+          description: "p95 latency is {{ $value }}ms (threshold: 1000ms)"
+
+      # Very slow response time (p95)
+      - alert: K6VerySlowResponseTime
+        expr: |
+          histogram_quantile(0.95, rate(k6_http_req_duration_bucket[5m])) > 2000
+        for: 2m
+        labels:
+          severity: critical
+          component: k6
+        annotations:
+          summary: "Very slow response time during k6 test"
+          description: "p95 latency is {{ $value }}ms (threshold: 2000ms)"
+
+      # Low throughput
+      - alert: K6LowThroughput
+        expr: |
+          rate(k6_http_reqs_total[5m]) < 10
+        for: 5m
+        labels:
+          severity: warning
+          component: k6
+        annotations:
+          summary: "Low request throughput during k6 test"
+          description: "Request rate is {{ $value | humanize }} req/s (threshold: 10 req/s)"
+
+      # Database connection pool near limit during load test
+      - alert: K6DatabaseConnectionPoolNearLimit
+        expr: |
+          pg_stat_database_numbackends{datname="posts_db"} > 90
+        for: 1m
+        labels:
+          severity: critical
+          component: database
+        annotations:
+          summary: "Database connection pool near limit during load test"
+          description: "{{ $value }} connections active (limit: 100)"
+
+      # High backend CPU usage during load test
+      - alert: K6HighBackendCPU
+        expr: |
+          rate(process_cpu_seconds_total{job="backend"}[5m]) * 100 > 80
+        for: 3m
+        labels:
+          severity: warning
+          component: backend
+        annotations:
+          summary: "High backend CPU usage during k6 load test"
+          description: "CPU usage is {{ $value | humanizePercentage }}"
+
+      # High backend memory usage during load test
+      - alert: K6HighBackendMemory
+        expr: |
+          process_resident_memory_bytes{job="backend"} > 2147483648
+        for: 3m
+        labels:
+          severity: warning
+          component: backend
+        annotations:
+          summary: "High backend memory usage during k6 load test"
+          description: "Memory usage is {{ $value | humanize1024 }}B (threshold: 2GB)"
+
+      # Test performance regression
+      - alert: K6PerformanceRegression
+        expr: |
+          (
+            histogram_quantile(0.95, rate(k6_http_req_duration_bucket{endpoint="posts_list"}[5m]))
+            /
+            histogram_quantile(0.95, rate(k6_http_req_duration_bucket{endpoint="posts_list"}[5m] offset 1d))
+          ) > 1.2
+        for: 5m
+        labels:
+          severity: warning
+          component: k6
+        annotations:
+          summary: "Performance regression detected in k6 load test"
+          description: "p95 latency increased by {{ $value | humanizePercentage }} compared to yesterday"
