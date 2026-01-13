@@ -20,6 +20,10 @@
     "test:e2e": "pnpm --filter backend test:e2e",
     "test:e2e:watch": "pnpm --filter backend test:e2e --watch",
     "test:e2e:cov": "pnpm --filter backend test:e2e --coverage",
+    "test:playwright": "playwright test",
+    "test:playwright:ui": "playwright test --ui",
+    "test:playwright:headed": "playwright test --headed",
+    "test:playwright:report": "playwright show-report",
     "lint": "pnpm --filter frontend lint && pnpm --filter backend lint",
     "format": "pnpm --filter frontend format && pnpm --filter backend format",
     "format:check": "pnpm --filter frontend format:check && pnpm --filter backend format:check",
@@ -32,6 +36,7 @@
   "devDependencies": {
     "@commitlint/cli": "^20.3.1",
     "@commitlint/config-conventional": "^20.3.1",
+    "@playwright/test": "^1.57.0",
     "husky": "^9.1.7",
     "lint-staged": "^16.2.7",
     "prettier": "^3.7.4"

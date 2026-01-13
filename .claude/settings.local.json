@@ -26,7 +26,15 @@
       "Bash(curl:*)",
       "Bash(docker-compose restart:*)",
       "Bash(docker-compose build:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(pnpm backend test:e2e:*)",
+      "Bash(pnpm test:*)",
+      "Bash(pnpm test:cov:*)",
+      "Bash(pnpm exec playwright install:*)",
+      "Bash(pnpm exec playwright:*)",
+      "Bash(pnpm test:playwright:*)",
+      "Bash(playwright test:*)",
+      "Bash(playwright show-report:*)"
     ]
   }
 }
