@@ -175,6 +175,26 @@ services:
   #   networks:
   #     - fullstack_network
 
+  # k6 Load Testing
+  k6:
+    image: grafana/k6:latest
+    container_name: fullstack_k6
+    networks:
+      - fullstack_network
+    volumes:
+      - ./k6:/scripts
+      - ./k6/results:/results
+    environment:
+      - BASE_URL=${K6_BASE_URL:-http://backend:4000}
+      - TEST_ENV=${TEST_ENV:-local}
+      - K6_PROMETHEUS_RW_SERVER_URL=http://prometheus:9090/api/v1/write
+    depends_on:
+      - backend
+      - prometheus
+    profiles:
+      - testing
+    command: run /scripts/smoke-test.js
+
 networks:
   fullstack_network:
     driver: bridge
