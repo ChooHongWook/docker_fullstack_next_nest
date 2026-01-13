@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
+import { PrometheusModule } from '@willsoto/nestjs-prometheus';
 import { PostsModule } from './posts/posts.module';
 import { AppController } from './app.controller';
 import { PrismaModule } from './prisma/prisma.module';
@@ -15,6 +16,12 @@ import { PermissionsGuard } from './auth/guards/permissions.guard';
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',
+    }),
+    PrometheusModule.register({
+      path: '/metrics',
+      defaultMetrics: {
+        enabled: true,
+      },
     }),
     PrismaModule,
     RedisModule,

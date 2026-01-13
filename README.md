@@ -5,6 +5,7 @@ Complete Docker-based fullstack application with Next.js frontend, NestJS backen
 ## Features
 
 ### Core Features
+
 - **Frontend**: Modern Next.js 14 with TypeScript, Tailwind CSS, and React Query
 - **Backend**: NestJS with Prisma ORM and PostgreSQL
 - **Database**: PostgreSQL 16 in Docker with persistent volumes
@@ -16,6 +17,7 @@ Complete Docker-based fullstack application with Next.js frontend, NestJS backen
 - **Responsive UI**: Mobile-first design that works on all devices
 
 ### Authentication & Authorization
+
 - **JWT Authentication**: Access token (15min) + Refresh token (7d)
 - **Cookie-based Storage**: HttpOnly cookies for XSS protection
 - **OAuth 2.0**: Google, GitHub, Kakao integration
@@ -24,9 +26,19 @@ Complete Docker-based fullstack application with Next.js frontend, NestJS backen
 - **Route Protection**: Next.js middleware for protected routes
 - **Session Management**: Redis + PostgreSQL hybrid storage
 
+### Monitoring & Observability
+
+- **Prometheus**: Real-time metrics collection from all services
+- **Grafana**: Pre-configured dashboards for visualization
+- **Application Metrics**: NestJS performance, response times, error rates
+- **Database Metrics**: PostgreSQL connections, queries, cache hits
+- **Cache Metrics**: Redis operations, memory usage, key statistics
+- **System Metrics**: CPU, memory, disk, network usage
+
 ## Technology Stack
 
 ### Frontend
+
 - **Next.js 14** - React framework with App Router
 - **TypeScript** - Type-safe JavaScript
 - **Tailwind CSS** - Utility-first CSS framework
@@ -34,16 +46,21 @@ Complete Docker-based fullstack application with Next.js frontend, NestJS backen
 - **Axios** - HTTP client
 
 ### Backend
+
 - **NestJS** - Progressive Node.js framework
 - **TypeORM** - ORM for TypeScript and JavaScript
 - **PostgreSQL** - Relational database
 - **class-validator** - Validation decorators
 - **class-transformer** - Object transformation
 
-### DevOps
+### DevOps & Monitoring
+
 - **Docker** - Containerization
 - **Docker Compose** - Multi-container orchestration
 - **pnpm** - Fast, disk space efficient package manager
+- **Prometheus** - Metrics collection and monitoring
+- **Grafana** - Metrics visualization and dashboards
+- **Exporters** - PostgreSQL, Redis, and Node.js system metrics
 
 ## Project Structure
 
@@ -101,16 +118,23 @@ docker-compose up -d --build
 ```
 
 This will start:
+
 - **PostgreSQL** on http://localhost:5432
 - **Backend API** on http://localhost:4000
 - **Frontend UI** on http://localhost:3000
+- **Prometheus** on http://localhost:9090
+- **Grafana** on http://localhost:3001
 
 ### 3. Access the Application
 
 Open your browser and visit:
+
 - **Frontend**: http://localhost:3000
 - **Backend API**: http://localhost:4000
 - **API Health Check**: http://localhost:4000/health
+- **Prometheus**: http://localhost:9090
+- **Grafana**: http://localhost:3001 (admin/admin)
+- **Backend Metrics**: http://localhost:4000/metrics
 
 ### 4. Stop Services
 
@@ -142,6 +166,13 @@ pnpm logs              # All services
 pnpm logs:frontend     # Frontend only
 pnpm logs:backend      # Backend only
 pnpm logs:db           # Database only
+pnpm logs:prometheus   # Prometheus only
+pnpm logs:grafana      # Grafana only
+
+# Monitoring services
+pnpm monitoring:up      # Start monitoring stack only
+pnpm monitoring:down    # Stop monitoring stack
+pnpm monitoring:restart # Restart Prometheus and Grafana
 
 # Stop services
 pnpm dev:down
@@ -153,6 +184,27 @@ pnpm dev:clean
 # or
 docker-compose down -v
 ```
+
+### Monitoring Setup
+
+The project includes a complete monitoring stack:
+
+1. **Prometheus** collects metrics from:
+   - NestJS backend (application metrics)
+   - PostgreSQL (database metrics)
+   - Redis (cache metrics)
+   - Node Exporter (system metrics)
+
+2. **Grafana** provides visualization:
+   - Pre-configured Prometheus datasource
+   - NestJS application dashboard
+   - Access at http://localhost:3001 (admin/admin)
+
+3. **Metrics Endpoints**:
+   - Backend: http://localhost:4000/metrics
+   - PostgreSQL Exporter: http://localhost:9187/metrics
+   - Redis Exporter: http://localhost:9121/metrics
+   - Node Exporter: http://localhost:9100/metrics
 
 ### Local Development (Without Docker)
 
@@ -242,13 +294,13 @@ NEXT_PUBLIC_API_URL=http://localhost:4000
 
 Base URL: `http://localhost:4000`
 
-| Method | Endpoint | Description | Request Body |
-|--------|----------|-------------|--------------|
-| GET | `/posts` | List all posts | - |
-| GET | `/posts/:id` | Get post by ID | - |
-| POST | `/posts` | Create new post | `{title, content, author?}` |
-| PATCH | `/posts/:id` | Update post | `{title?, content?, author?}` |
-| DELETE | `/posts/:id` | Delete post | - |
+| Method | Endpoint     | Description     | Request Body                  |
+| ------ | ------------ | --------------- | ----------------------------- |
+| GET    | `/posts`     | List all posts  | -                             |
+| GET    | `/posts/:id` | Get post by ID  | -                             |
+| POST   | `/posts`     | Create new post | `{title, content, author?}`   |
+| PATCH  | `/posts/:id` | Update post     | `{title?, content?, author?}` |
+| DELETE | `/posts/:id` | Delete post     | -                             |
 
 ### Example Requests
 
@@ -562,6 +614,7 @@ MIT
 ## Support
 
 For issues, questions, or contributions:
+
 1. Check existing documentation
 2. Review troubleshooting section
 3. Check Docker logs: `docker-compose logs`
@@ -570,6 +623,7 @@ For issues, questions, or contributions:
 ## Roadmap
 
 ### Short-term
+
 - [ ] Add authentication (JWT)
 - [ ] Implement search functionality
 - [ ] Add post categories/tags
@@ -577,6 +631,7 @@ For issues, questions, or contributions:
 - [ ] Image uploads
 
 ### Long-term
+
 - [ ] Comment system
 - [ ] User profiles
 - [ ] Like/favorite posts
@@ -586,6 +641,7 @@ For issues, questions, or contributions:
 ---
 
 **Built with specialized agents**:
+
 - Senior Backend Developer (10 years NestJS experience)
 - Senior Frontend Developer (10 years Next.js experience)
 

@@ -9,6 +9,7 @@ Docker-based fullstack monorepo with Next.js 14 frontend, NestJS backend, and Po
 ## Development Commands
 
 ### Docker Workflow (Primary)
+
 ```bash
 # Start all services (PostgreSQL, Backend, Frontend)
 pnpm dev                    # or docker-compose up
@@ -21,11 +22,19 @@ pnpm logs                  # All services
 pnpm logs:frontend         # Frontend only
 pnpm logs:backend          # Backend only
 pnpm logs:db               # Database only
+pnpm logs:prometheus       # Prometheus only
+pnpm logs:grafana          # Grafana only
+
+# Monitoring
+pnpm monitoring:up         # Start monitoring stack only
+pnpm monitoring:down       # Stop monitoring stack
+pnpm monitoring:restart    # Restart Prometheus and Grafana
 ```
 
 ### Local Development (Without Docker)
 
 #### Backend
+
 ```bash
 pnpm backend start:dev     # Development server with watch mode
 pnpm backend build         # Production build
@@ -39,6 +48,7 @@ pnpm backend prisma:studio           # Open Prisma Studio
 ```
 
 #### Frontend
+
 ```bash
 pnpm frontend dev          # Development server
 pnpm frontend build        # Production build
@@ -47,6 +57,7 @@ pnpm frontend type-check   # TypeScript type checking
 ```
 
 ### Code Quality
+
 ```bash
 pnpm lint                  # Lint both apps
 pnpm format                # Format both apps
@@ -54,6 +65,7 @@ pnpm format:check          # Check formatting
 ```
 
 ### Testing
+
 ```bash
 # Backend tests
 pnpm backend test          # Run unit tests
@@ -69,25 +81,30 @@ pnpm backend test:e2e      # E2E tests
 **ORM Migration (Important)**: Recently migrated from TypeORM to Prisma 7 with PostgreSQL adapter.
 
 **Database Connection**:
+
 - Uses Prisma 7 with `@prisma/adapter-pg` for PostgreSQL connection pooling
 - `PrismaService` (apps/backend/src/prisma/prisma.service.ts) extends PrismaClient
 - Connection configured via `DATABASE_URL` environment variable
 - Pool adapter pattern: `new Pool() → PrismaPg adapter → PrismaClient`
 
 **Module Structure**:
+
 - `AppModule` → Root module with ConfigModule (global), PrismaModule, PostsModule
 - `PrismaModule` → Exports PrismaService globally
 - `PostsModule` → CRUD operations for posts (controller, service, DTOs)
 
 **Global Pipes**:
+
 - `ValidationPipe` configured with `whitelist: true`, `transform: true`, `forbidNonWhitelisted: true`
 
 **CORS**:
+
 - Enabled for `FRONTEND_URL` with credentials support
 
 **Prisma Schema Location**: apps/backend/prisma/schema.prisma
 
 **Adding New Endpoints**:
+
 1. Generate Prisma Client after schema changes: `pnpm backend prisma:generate`
 2. Run migrations: `pnpm backend prisma:migrate`
 3. Create module with NestJS CLI or manually
@@ -96,6 +113,7 @@ pnpm backend test:e2e      # E2E tests
 ### Frontend (Next.js 14 + React Query)
 
 **Data Fetching**:
+
 - Uses TanStack React Query (v5) for server state management
 - API client in [apps/frontend/src/lib/api.ts](apps/frontend/src/lib/api.ts)
 - Custom `ApiErrorException` for proper error serialization with Suspense boundaries
@@ -105,6 +123,7 @@ pnpm backend test:e2e      # E2E tests
 See [docs/suspense-error-boundary-rules.md](docs/suspense-error-boundary-rules.md) for complete rules. Key points:
 
 1. **Required Structure for Initial Page Data**:
+
    ```tsx
    <ErrorBoundary fallback={<ErrorView />}>
      <Suspense fallback={<Skeleton />}>
@@ -132,6 +151,7 @@ See [docs/suspense-error-boundary-rules.md](docs/suspense-error-boundary-rules.m
    - Page-level or section-level component?
 
 **Component Structure**:
+
 - [apps/frontend/src/components/ErrorBoundary.tsx](apps/frontend/src/components/ErrorBoundary.tsx) → Custom error boundary
 - UI components in [apps/frontend/src/components/ui/](apps/frontend/src/components/ui/) → Shadcn/ui based
 - Custom hooks in [apps/frontend/src/hooks/](apps/frontend/src/hooks/)
@@ -141,6 +161,7 @@ See [docs/suspense-error-boundary-rules.md](docs/suspense-error-boundary-rules.m
 ### Environment Variables
 
 **Root `.env`**:
+
 ```env
 POSTGRES_USER=postgres
 POSTGRES_PASSWORD=postgres
@@ -150,6 +171,7 @@ FRONTEND_URL=http://localhost:3000
 ```
 
 **Backend** (apps/backend/.env):
+
 ```env
 NODE_ENV=development
 PORT=4000
@@ -158,6 +180,7 @@ FRONTEND_URL=http://localhost:3000
 ```
 
 **Frontend** (apps/frontend/.env.local):
+
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:4000
 ```
@@ -178,6 +201,9 @@ psql -h localhost -p 5432 -U postgres -d posts_db
 - **Backend API**: http://localhost:4000
 - **PostgreSQL**: localhost:5432
 - **Health Check**: http://localhost:4000/health
+- **Prometheus**: http://localhost:9090
+- **Grafana**: http://localhost:3001 (admin/admin)
+- **Backend Metrics**: http://localhost:4000/metrics
 
 ## Common Patterns
 
@@ -211,10 +237,51 @@ pnpm --filter frontend remove <package>
 pnpm --filter backend remove <package>
 ```
 
+## Monitoring Stack
+
+### Overview
+
+Integrated Prometheus and Grafana for comprehensive application and infrastructure monitoring.
+
+### Components
+
+- **Prometheus**: Metrics collection and time-series database
+- **Grafana**: Visualization and dashboards
+- **Postgres Exporter**: PostgreSQL database metrics
+- **Redis Exporter**: Redis cache metrics
+- **Node Exporter**: System-level metrics
+
+### Metrics Endpoints
+
+- Backend NestJS metrics exposed at `/metrics`
+- PostgreSQL metrics from postgres-exporter (port 9187)
+- Redis metrics from redis-exporter (port 9121)
+- System metrics from node-exporter (port 9100)
+
+### Configuration Files
+
+- `monitoring/prometheus/prometheus.yml` - Prometheus scrape configuration
+- `monitoring/grafana/provisioning/datasources/` - Grafana datasources
+- `monitoring/grafana/provisioning/dashboards/` - Pre-configured dashboards
+
+### Usage
+
+```bash
+# Start full stack including monitoring
+pnpm dev
+
+# Start monitoring stack only (requires backend running)
+pnpm monitoring:up
+
+# Access dashboards
+open http://localhost:9090  # Prometheus
+open http://localhost:3001  # Grafana (admin/admin)
+```
+
 ## Important Notes
 
 - **Node.js version**: >=20.0.0 (check package.json engines)
 - **Package manager**: pnpm >=8.0.0 (enforced)
 - **Backend runs Prisma generate** automatically before build and dev (prebuild/prestart:dev hooks)
-- **Docker service names**: `frontend`, `backend`, `postgres` (use these for inter-container communication)
+- **Docker service names**: `frontend`, `backend`, `postgres`, `prometheus`, `grafana` (use these for inter-container communication)
 - **Hot reload** is configured in Docker via volume mounts (excludes node_modules)

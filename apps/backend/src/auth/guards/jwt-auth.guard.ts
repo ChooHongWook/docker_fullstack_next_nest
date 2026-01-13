@@ -19,6 +19,12 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
       return true;
     }
 
+    // Allow access to public endpoints
+    const request = context.switchToHttp().getRequest();
+    if (request.url === '/metrics' || request.url === '/health') {
+      return true;
+    }
+
     return super.canActivate(context);
   }
 }
