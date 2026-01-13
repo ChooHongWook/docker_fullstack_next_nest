@@ -16,13 +16,11 @@ describe('Posts CRUD (e2e)', () => {
     await TestHelper.seedRolesAndPermissions(app);
 
     // Create and login test user
-    await request(app.getHttpServer())
-      .post('/auth/register')
-      .send({
-        email: 'user@example.com',
-        password: 'User123!@#',
-        name: 'Test User',
-      });
+    await request(app.getHttpServer()).post('/auth/register').send({
+      email: 'user@example.com',
+      password: 'User123!@#',
+      name: 'Test User',
+    });
 
     const loginResponse = await request(app.getHttpServer())
       .post('/auth/login')
@@ -31,7 +29,9 @@ describe('Posts CRUD (e2e)', () => {
         password: 'User123!@#',
       });
 
-    userCookies = TestHelper.extractCookies(loginResponse.headers['set-cookie']);
+    userCookies = TestHelper.extractCookies(
+      loginResponse.headers['set-cookie'],
+    );
     userId = loginResponse.body.user.id;
   });
 
@@ -289,13 +289,11 @@ describe('Posts CRUD (e2e)', () => {
 
     it("should reject update of other user's post", async () => {
       // Create another user
-      await request(app.getHttpServer())
-        .post('/auth/register')
-        .send({
-          email: 'other@example.com',
-          password: 'Other123!@#',
-          name: 'Other User',
-        });
+      await request(app.getHttpServer()).post('/auth/register').send({
+        email: 'other@example.com',
+        password: 'Other123!@#',
+        name: 'Other User',
+      });
 
       const otherLoginResponse = await request(app.getHttpServer())
         .post('/auth/login')
@@ -343,9 +341,7 @@ describe('Posts CRUD (e2e)', () => {
         .expect(200);
 
       // Verify post is deleted
-      await request(app.getHttpServer())
-        .get(`/posts/${postId}`)
-        .expect(404);
+      await request(app.getHttpServer()).get(`/posts/${postId}`).expect(404);
     });
 
     it('should reject delete without authentication', async () => {
@@ -368,13 +364,11 @@ describe('Posts CRUD (e2e)', () => {
 
     it("should reject delete of other user's post", async () => {
       // Create another user
-      await request(app.getHttpServer())
-        .post('/auth/register')
-        .send({
-          email: 'other@example.com',
-          password: 'Other123!@#',
-          name: 'Other User',
-        });
+      await request(app.getHttpServer()).post('/auth/register').send({
+        email: 'other@example.com',
+        password: 'Other123!@#',
+        name: 'Other User',
+      });
 
       const otherLoginResponse = await request(app.getHttpServer())
         .post('/auth/login')
@@ -396,9 +390,7 @@ describe('Posts CRUD (e2e)', () => {
       expect(response.body.message).toContain('permission');
 
       // Verify post still exists
-      await request(app.getHttpServer())
-        .get(`/posts/${postId}`)
-        .expect(200);
+      await request(app.getHttpServer()).get(`/posts/${postId}`).expect(200);
     });
   });
 
@@ -409,21 +401,17 @@ describe('Posts CRUD (e2e)', () => {
 
     beforeEach(async () => {
       // Create two users
-      await request(app.getHttpServer())
-        .post('/auth/register')
-        .send({
-          email: 'user1@example.com',
-          password: 'User1123!@#',
-          name: 'User 1',
-        });
+      await request(app.getHttpServer()).post('/auth/register').send({
+        email: 'user1@example.com',
+        password: 'User1123!@#',
+        name: 'User 1',
+      });
 
-      await request(app.getHttpServer())
-        .post('/auth/register')
-        .send({
-          email: 'user2@example.com',
-          password: 'User2123!@#',
-          name: 'User 2',
-        });
+      await request(app.getHttpServer()).post('/auth/register').send({
+        email: 'user2@example.com',
+        password: 'User2123!@#',
+        name: 'User 2',
+      });
 
       // Login both users
       const login1 = await request(app.getHttpServer())
@@ -465,7 +453,7 @@ describe('Posts CRUD (e2e)', () => {
       expect(response.body.title).toBe('User 1 Post');
     });
 
-    it('should not allow updating another user\'s post', async () => {
+    it("should not allow updating another user's post", async () => {
       const response = await request(app.getHttpServer())
         .patch(`/posts/${user1PostId}`)
         .set('Cookie', user2Cookies)
@@ -477,7 +465,7 @@ describe('Posts CRUD (e2e)', () => {
       expect(response.body.message).toContain('permission');
     });
 
-    it('should not allow deleting another user\'s post', async () => {
+    it("should not allow deleting another user's post", async () => {
       const response = await request(app.getHttpServer())
         .delete(`/posts/${user1PostId}`)
         .set('Cookie', user2Cookies)

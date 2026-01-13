@@ -34,7 +34,12 @@
       "Bash(pnpm exec playwright:*)",
       "Bash(pnpm test:playwright:*)",
       "Bash(playwright test:*)",
-      "Bash(playwright show-report:*)"
+      "Bash(playwright show-report:*)",
+      "Bash(npx depcheck:*)",
+      "Bash(grep:*)",
+      "Bash(pnpm backend lint:*)",
+      "Bash(pnpm --filter backend lint:*)",
+      "Bash(pnpm --filter frontend test)"
     ]
   }
 }

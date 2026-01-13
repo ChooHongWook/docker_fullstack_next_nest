@@ -191,7 +191,9 @@ export class TestHelper {
   }
 
   static extractCookies(setCookieHeaders: string | string[]): string[] {
-    const headers = Array.isArray(setCookieHeaders) ? setCookieHeaders : [setCookieHeaders];
+    const headers = Array.isArray(setCookieHeaders)
+      ? setCookieHeaders
+      : [setCookieHeaders];
     return headers.map((cookie) => cookie.split(';')[0]);
   }
 

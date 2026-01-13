@@ -8,10 +8,7 @@ import { Post } from '@prisma/client';
 export class PostsService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(
-    createPostDto: CreatePostDto,
-    authorId: string,
-  ): Promise<Post> {
+  async create(createPostDto: CreatePostDto, authorId: string): Promise<Post> {
     return this.prisma.post.create({
       data: {
         ...createPostDto,

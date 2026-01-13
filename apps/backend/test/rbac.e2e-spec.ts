@@ -25,13 +25,11 @@ describe('RBAC - Roles and Permissions (e2e)', () => {
     await TestHelper.seedRolesAndPermissions(app);
 
     // Create USER
-    await request(app.getHttpServer())
-      .post('/auth/register')
-      .send({
-        email: 'user@example.com',
-        password: 'User123!@#',
-        name: 'Regular User',
-      });
+    await request(app.getHttpServer()).post('/auth/register').send({
+      email: 'user@example.com',
+      password: 'User123!@#',
+      name: 'Regular User',
+    });
 
     const userLogin = await request(app.getHttpServer())
       .post('/auth/login')
@@ -371,14 +369,10 @@ describe('RBAC - Roles and Permissions (e2e)', () => {
       const postId = userPost.body.id;
 
       // Try to delete without auth (should fail at auth level)
-      await request(app.getHttpServer())
-        .delete(`/posts/${postId}`)
-        .expect(401);
+      await request(app.getHttpServer()).delete(`/posts/${postId}`).expect(401);
 
       // Verify post still exists
-      await request(app.getHttpServer())
-        .get(`/posts/${postId}`)
-        .expect(200);
+      await request(app.getHttpServer()).get(`/posts/${postId}`).expect(200);
     });
   });
 
@@ -467,13 +461,11 @@ describe('RBAC - Roles and Permissions (e2e)', () => {
       const postId = userPost.body.id;
 
       // Create another user
-      await request(app.getHttpServer())
-        .post('/auth/register')
-        .send({
-          email: 'other@example.com',
-          password: 'Other123!@#',
-          name: 'Other User',
-        });
+      await request(app.getHttpServer()).post('/auth/register').send({
+        email: 'other@example.com',
+        password: 'Other123!@#',
+        name: 'Other User',
+      });
 
       const otherLogin = await request(app.getHttpServer())
         .post('/auth/login')

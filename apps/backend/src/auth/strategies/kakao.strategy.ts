@@ -23,8 +23,7 @@ export class KakaoStrategy extends PassportStrategy(Strategy, 'kakao') {
   ): Promise<any> {
     const { id, username, _json } = profile;
 
-    const email =
-      _json.kakao_account?.email || `${id}@kakao.placeholder.com`;
+    const email = _json.kakao_account?.email || `${id}@kakao.placeholder.com`;
     const name =
       _json.kakao_account?.profile?.nickname || username || 'Kakao User';
     const avatar = _json.kakao_account?.profile?.profile_image_url || null;

@@ -142,10 +142,16 @@ describe('Authentication (e2e)', () => {
         message: 'Login successful',
       });
 
-      const cookies = response.headers['set-cookie'] as unknown as unknown as string[];
+      const cookies = response.headers[
+        'set-cookie'
+      ] as unknown as unknown as string[];
       expect(cookies).toBeDefined();
-      expect(cookies.some((cookie: string) => cookie.startsWith('access_token='))).toBe(true);
-      expect(cookies.some((cookie: string) => cookie.startsWith('refresh_token='))).toBe(true);
+      expect(
+        cookies.some((cookie: string) => cookie.startsWith('access_token=')),
+      ).toBe(true);
+      expect(
+        cookies.some((cookie: string) => cookie.startsWith('refresh_token=')),
+      ).toBe(true);
     });
 
     it('should reject login with invalid password', async () => {
@@ -186,13 +192,11 @@ describe('Authentication (e2e)', () => {
 
     beforeEach(async () => {
       // Register and login
-      await request(app.getHttpServer())
-        .post('/auth/register')
-        .send({
-          email: 'test@example.com',
-          password: 'Test123!@#',
-          name: 'Test User',
-        });
+      await request(app.getHttpServer()).post('/auth/register').send({
+        email: 'test@example.com',
+        password: 'Test123!@#',
+        name: 'Test User',
+      });
 
       const loginResponse = await request(app.getHttpServer())
         .post('/auth/login')
@@ -250,13 +254,11 @@ describe('Authentication (e2e)', () => {
 
     beforeEach(async () => {
       // Register and login
-      await request(app.getHttpServer())
-        .post('/auth/register')
-        .send({
-          email: 'test@example.com',
-          password: 'Test123!@#',
-          name: 'Test User',
-        });
+      await request(app.getHttpServer()).post('/auth/register').send({
+        email: 'test@example.com',
+        password: 'Test123!@#',
+        name: 'Test User',
+      });
 
       const loginResponse = await request(app.getHttpServer())
         .post('/auth/login')
@@ -278,8 +280,14 @@ describe('Authentication (e2e)', () => {
 
       const newCookies = response.headers['set-cookie'] as unknown as string[];
       expect(newCookies).toBeDefined();
-      expect(newCookies.some((cookie: string) => cookie.startsWith('access_token='))).toBe(true);
-      expect(newCookies.some((cookie: string) => cookie.startsWith('refresh_token='))).toBe(true);
+      expect(
+        newCookies.some((cookie: string) => cookie.startsWith('access_token=')),
+      ).toBe(true);
+      expect(
+        newCookies.some((cookie: string) =>
+          cookie.startsWith('refresh_token='),
+        ),
+      ).toBe(true);
 
       // Verify new tokens work
       const meResponse = await request(app.getHttpServer())
@@ -329,13 +337,11 @@ describe('Authentication (e2e)', () => {
 
     beforeEach(async () => {
       // Register and login
-      await request(app.getHttpServer())
-        .post('/auth/register')
-        .send({
-          email: 'test@example.com',
-          password: 'Test123!@#',
-          name: 'Test User',
-        });
+      await request(app.getHttpServer()).post('/auth/register').send({
+        email: 'test@example.com',
+        password: 'Test123!@#',
+        name: 'Test User',
+      });
 
       const loginResponse = await request(app.getHttpServer())
         .post('/auth/login')
@@ -358,8 +364,12 @@ describe('Authentication (e2e)', () => {
       // Verify cookies are cleared
       const setCookies = response.headers['set-cookie'] as unknown as string[];
       expect(setCookies).toBeDefined();
-      expect(setCookies.some((cookie: string) => cookie.includes('access_token=;'))).toBe(true);
-      expect(setCookies.some((cookie: string) => cookie.includes('refresh_token=;'))).toBe(true);
+      expect(
+        setCookies.some((cookie: string) => cookie.includes('access_token=;')),
+      ).toBe(true);
+      expect(
+        setCookies.some((cookie: string) => cookie.includes('refresh_token=;')),
+      ).toBe(true);
 
       // Verify tokens no longer work
       const meResponse = await request(app.getHttpServer())
@@ -371,22 +381,18 @@ describe('Authentication (e2e)', () => {
     });
 
     it('should reject logout without token', async () => {
-      await request(app.getHttpServer())
-        .post('/auth/logout')
-        .expect(401);
+      await request(app.getHttpServer()).post('/auth/logout').expect(401);
     });
   });
 
   describe('Token Security', () => {
     it('should not expose sensitive data in JWT payload', async () => {
       // Register and login
-      await request(app.getHttpServer())
-        .post('/auth/register')
-        .send({
-          email: 'test@example.com',
-          password: 'Test123!@#',
-          name: 'Test User',
-        });
+      await request(app.getHttpServer()).post('/auth/register').send({
+        email: 'test@example.com',
+        password: 'Test123!@#',
+        name: 'Test User',
+      });
 
       const loginResponse = await request(app.getHttpServer())
         .post('/auth/login')
@@ -395,7 +401,9 @@ describe('Authentication (e2e)', () => {
           password: 'Test123!@#',
         });
 
-      const cookies = loginResponse.headers['set-cookie'] as unknown as string[];
+      const cookies = loginResponse.headers[
+        'set-cookie'
+      ] as unknown as string[];
       expect(cookies).toBeDefined();
 
       // Extract access_token
@@ -413,13 +421,11 @@ describe('Authentication (e2e)', () => {
 
     it('should handle concurrent login sessions', async () => {
       // Register user
-      await request(app.getHttpServer())
-        .post('/auth/register')
-        .send({
-          email: 'test@example.com',
-          password: 'Test123!@#',
-          name: 'Test User',
-        });
+      await request(app.getHttpServer()).post('/auth/register').send({
+        email: 'test@example.com',
+        password: 'Test123!@#',
+        name: 'Test User',
+      });
 
       // First login (device 1)
       const login1 = await request(app.getHttpServer())
