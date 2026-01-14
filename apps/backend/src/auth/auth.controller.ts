@@ -10,6 +10,12 @@ import {
   HttpStatus,
   UnauthorizedException,
 } from '@nestjs/common';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiCookieAuth,
+} from '@nestjs/swagger';
 import { Response, Request } from 'express';
 import { AuthService } from './auth.service';
 import { TokenService } from './token.service';
@@ -23,6 +29,7 @@ import { Public } from './decorators/public.decorator';
 import { CurrentUser } from './decorators/current-user.decorator';
 import { User } from '@prisma/client';
 
+@ApiTags('auth')
 @Controller('auth')
 export class AuthController {
   constructor(
@@ -33,6 +40,15 @@ export class AuthController {
   @Public()
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
+  @ApiOperation({ summary: 'Register a new user' })
+  @ApiResponse({
+    status: 201,
+    description: 'User registered successfully',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Invalid input or email already exists',
+  })
   async register(@Body() registerDto: RegisterDto) {
     const user = await this.authService.register(
       registerDto.email,
@@ -47,6 +63,12 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @Post('login')
   @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Login with email and password' })
+  @ApiResponse({
+    status: 200,
+    description: 'Login successful - cookies set',
+  })
+  @ApiResponse({ status: 401, description: 'Invalid credentials' })
   async login(
     @CurrentUser() user: User,
     @Req() req: Request,
@@ -90,7 +112,16 @@ export class AuthController {
   @Public()
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
-  async refresh(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
+  @ApiOperation({ summary: 'Refresh access token using refresh token' })
+  @ApiResponse({
+    status: 200,
+    description: 'Token refreshed successfully',
+  })
+  @ApiResponse({ status: 401, description: 'Invalid or expired refresh token' })
+  async refresh(
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ) {
     const oldRefreshToken = req.cookies?.refresh_token;
     if (!oldRefreshToken) {
       throw new UnauthorizedException('Refresh token not found');
@@ -133,6 +164,12 @@ export class AuthController {
 
   @Post('logout')
   @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Logout and clear authentication cookies' })
+  @ApiCookieAuth('access_token')
+  @ApiResponse({
+    status: 200,
+    description: 'Logout successful',
+  })
   async logout(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
     const refreshToken = req.cookies?.refresh_token;
     if (refreshToken) {
@@ -147,6 +184,13 @@ export class AuthController {
 
   @Get('me')
   @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Get current authenticated user' })
+  @ApiCookieAuth('access_token')
+  @ApiResponse({
+    status: 200,
+    description: 'Current user information',
+  })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   async getCurrentUser(@CurrentUser() user: User) {
     const { password, ...userWithoutPassword } = user;
     return userWithoutPassword;
@@ -156,6 +200,11 @@ export class AuthController {
   @Public()
   @Get('google')
   @UseGuards(GoogleAuthGuard)
+  @ApiOperation({ summary: 'Initiate Google OAuth login' })
+  @ApiResponse({
+    status: 302,
+    description: 'Redirects to Google OAuth consent page',
+  })
   async googleAuth() {
     // Initiates Google OAuth flow
   }
@@ -163,6 +212,11 @@ export class AuthController {
   @Public()
   @Get('google/callback')
   @UseGuards(GoogleAuthGuard)
+  @ApiOperation({ summary: 'Google OAuth callback' })
+  @ApiResponse({
+    status: 302,
+    description: 'Redirects to frontend with authentication cookies set',
+  })
   async googleAuthCallback(
     @CurrentUser() user: User,
     @Req() req: Request,
@@ -174,6 +228,11 @@ export class AuthController {
   @Public()
   @Get('github')
   @UseGuards(GithubAuthGuard)
+  @ApiOperation({ summary: 'Initiate GitHub OAuth login' })
+  @ApiResponse({
+    status: 302,
+    description: 'Redirects to GitHub OAuth consent page',
+  })
   async githubAuth() {
     // Initiates GitHub OAuth flow
   }
@@ -181,6 +240,11 @@ export class AuthController {
   @Public()
   @Get('github/callback')
   @UseGuards(GithubAuthGuard)
+  @ApiOperation({ summary: 'GitHub OAuth callback' })
+  @ApiResponse({
+    status: 302,
+    description: 'Redirects to frontend with authentication cookies set',
+  })
   async githubAuthCallback(
     @CurrentUser() user: User,
     @Req() req: Request,
@@ -192,6 +256,11 @@ export class AuthController {
   @Public()
   @Get('kakao')
   @UseGuards(KakaoAuthGuard)
+  @ApiOperation({ summary: 'Initiate Kakao OAuth login' })
+  @ApiResponse({
+    status: 302,
+    description: 'Redirects to Kakao OAuth consent page',
+  })
   async kakaoAuth() {
     // Initiates Kakao OAuth flow
   }
@@ -199,6 +268,11 @@ export class AuthController {
   @Public()
   @Get('kakao/callback')
   @UseGuards(KakaoAuthGuard)
+  @ApiOperation({ summary: 'Kakao OAuth callback' })
+  @ApiResponse({
+    status: 302,
+    description: 'Redirects to frontend with authentication cookies set',
+  })
   async kakaoAuthCallback(
     @CurrentUser() user: User,
     @Req() req: Request,
@@ -208,11 +282,7 @@ export class AuthController {
   }
 
   // Common OAuth callback handler
-  private async handleOAuthCallback(
-    user: User,
-    req: Request,
-    res: Response,
-  ) {
+  private async handleOAuthCallback(user: User, req: Request, res: Response) {
     const roles = (user as any).roles.map((ur: any) => ur.role.name);
     const payload = { sub: user.id, email: user.email, roles };
 
