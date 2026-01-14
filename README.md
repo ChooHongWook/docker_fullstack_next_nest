@@ -1,5 +1,7 @@
 # Docker Fullstack Next.js + NestJS CRUD Application
 
+[English](README.md) | [한국어](README.ko.md)
+
 Complete Docker-based fullstack application with Next.js frontend, NestJS backend, and PostgreSQL database for managing posts/articles.
 
 ## Features
