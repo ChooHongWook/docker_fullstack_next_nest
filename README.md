@@ -119,6 +119,31 @@ docker-compose up --build
 docker-compose up -d --build
 ```
 
+### 3. Initialize Database
+
+When starting the Docker environment fresh, run these commands:
+
+```bash
+# Start development environment
+pnpm dev
+
+# Run migrations and seed (inside backend container)
+docker exec fullstack_backend npx prisma migrate deploy
+docker exec fullstack_backend npx tsx prisma/seed.ts
+```
+
+These commands will:
+
+- Apply Prisma migrations to create database tables
+- Create initial roles (USER, MODERATOR, ADMIN) and permissions
+- Generate test accounts and sample data
+
+**Test accounts** created by seed script:
+
+- **Admin**: `admin@example.com` / `Admin123!`
+- **User**: `user@example.com` / `User123!`
+- **Load Test Users**: `loadtest@example.com` / `TestPassword123!`
+
 This will start:
 
 - **PostgreSQL** on http://localhost:5432
@@ -127,7 +152,7 @@ This will start:
 - **Prometheus** on http://localhost:9090
 - **Grafana** on http://localhost:3001
 
-### 3. Access the Application
+### 4. Access the Application
 
 Open your browser and visit:
 
@@ -138,7 +163,7 @@ Open your browser and visit:
 - **Grafana**: http://localhost:3001 (admin/admin)
 - **Backend Metrics**: http://localhost:4000/metrics
 
-### 4. Stop Services
+### 5. Stop Services
 
 ```bash
 # Stop services

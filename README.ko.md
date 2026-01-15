@@ -119,6 +119,31 @@ docker-compose up --build
 docker-compose up -d --build
 ```
 
+### 3. 데이터베이스 초기화
+
+Docker 환경을 새로 시작할 때는 다음 명령어를 실행하세요:
+
+```bash
+# 개발 환경 시작
+pnpm dev
+
+# 마이그레이션 및 시드 실행 (백엔드 컨테이너 내부에서)
+docker exec fullstack_backend npx prisma migrate deploy
+docker exec fullstack_backend npx tsx prisma/seed.ts
+```
+
+이 명령어들은:
+
+- Prisma 마이그레이션을 적용하여 데이터베이스 테이블 생성
+- 초기 역할(USER, MODERATOR, ADMIN) 및 권한 생성
+- 테스트 계정 및 샘플 데이터 생성
+
+시드 스크립트로 생성되는 **테스트 계정**:
+
+- **Admin**: `admin@example.com` / `Admin123!`
+- **User**: `user@example.com` / `User123!`
+- **Load Test Users**: `loadtest@example.com` / `TestPassword123!`
+
 다음이 시작됩니다:
 
 - **PostgreSQL** (http://localhost:5432)
@@ -127,7 +152,7 @@ docker-compose up -d --build
 - **Prometheus** (http://localhost:9090)
 - **Grafana** (http://localhost:3001)
 
-### 3. 애플리케이션 접속
+### 4. 애플리케이션 접속
 
 브라우저를 열고 다음 주소를 방문하세요:
 
@@ -138,7 +163,7 @@ docker-compose up -d --build
 - **Grafana**: http://localhost:3001 (admin/admin)
 - **백엔드 메트릭**: http://localhost:4000/metrics
 
-### 4. 서비스 중지
+### 5. 서비스 중지
 
 ```bash
 # 서비스 중지
