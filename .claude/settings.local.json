@@ -41,5 +41,7 @@
       "Bash(pnpm --filter backend lint:*)",
       "Bash(pnpm --filter frontend test)"
     ]
-  }
+  },
+  "enabledMcpjsonServers": ["shadcn"],
+  "enableAllProjectMcpServers": true
 }
